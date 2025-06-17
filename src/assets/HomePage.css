@@ -1,0 +1,542 @@
+/* HomePage.css - MotionExpert Home Page Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+:root {
+    --primary-red: #e63946;
+    --sidebar-bg: #f8f9fa;
+    --main-bg: #f5f5f5;
+    --text-dark: #212529;
+    --text-light: #6c757d;
+    --border-color: #dee2e6;
+    --green-status: #28a745;
+    --yellow-status: #ffc107;
+    --red-status: #dc3545;
+    --card-bg: #fff;
+    --hover-bg: #e9ecef;
+}
+
+body {
+    background-color: var(--main-bg);
+    color: var(--text-dark);
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+}
+
+.home-container {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    overflow: hidden; /* 防止內容溢出 */
+}
+
+/* 左側導航欄 */
+.sidebar {
+    width: 300px;  /* 固定寬度，避免計算問題 */
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    padding: 20px 25px; /* 增加左右內邊距 */
+    border-bottom: 1px solid var(--border-color);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-red);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 18px;
+}
+
+.user-details h3 {
+    font-size: 18px;  /* 增加字體大小 (從16px) */
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+
+.user-details p {
+    font-size: 15px;  /* 增加字體大小 (從14px) */
+    color: var(--text-light);
+}
+
+.main-nav ul,
+.projects-nav ul,
+.footer-nav {
+    list-style-type: none;
+}
+
+.main-nav ul li {
+    padding: 12px 25px; /* 增加左右內邊距，從20px增加到25px */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-dark);
+    border-radius: 5px;
+    margin: 3px 8px;
+    font-size: 16px;  /* 增加字體大小 (從15px) */
+}
+
+.main-nav ul li:hover {
+    background-color: var(--hover-bg);
+}
+
+.main-nav ul li.active {
+    background-color: var(--hover-bg);
+    font-weight: 500;
+}
+
+.projects-nav ul li,
+.footer-nav li {
+    padding: 10px 25px; /* 增加左右內邊距，從20px增加到25px */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--text-dark);
+    border-radius: 5px;
+    margin: 3px 8px;
+    font-size: 16px;  /* 增加字體大小 (從15px) */
+}
+
+.projects-nav ul li:hover,
+.footer-nav li:hover {
+    background-color: var(--hover-bg);
+}
+
+.main-nav ul li i,
+.footer-nav li i {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+    color: #999;
+}
+
+.projects-nav ul li i.fa-folder {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+    color: #8bc34a; /* 綠色資料夾 */
+}
+
+.projects-nav ul li:nth-child(6) i.fa-folder,
+.projects-nav ul li:nth-child(7) i.fa-folder {
+    color: #ffc107; /* 黃色資料夾 */
+}
+
+.projects-nav ul li:nth-child(8) i.fa-folder,
+.projects-nav ul li:nth-child(9) i.fa-folder {
+    color: #ff9800; /* 橙色資料夾 */
+}
+
+.main-nav {
+    margin: 10px 0;
+}
+
+.projects-nav h4 {
+    padding: 15px 25px 5px; /* 增加左右內邊距，從20px增加到25px */
+    color: var(--text-light);
+    font-weight: 500;
+    font-size: 15px;  /* 增加字體大小 (從14px) */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+}
+
+.projects-nav ul li i.fa-chevron-down {
+    margin-left: auto;
+    margin-right: 0;
+    font-size: 10px;
+    color: var(--text-light);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+.search-box {
+    margin: 5px 15px 15px;
+    padding: 10px 20px; /* 增加內邊距 */
+    background-color: #e9ecef;
+    border-radius: 20px; /* 更圓的邊角，符合截圖 */
+    display: flex;
+    align-items: center;
+}
+
+.search-box i {
+    color: var(--text-light);
+    margin-right: 10px;
+}
+
+.search-box input {
+    flex-grow: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 15px;  /* 增加字體大小 (從14px) */
+}
+
+.keyboard-shortcut {
+    background-color: #dee2e6;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--text-light);
+    margin-left: -15px; /* 往左移動一點 */
+}
+
+.company-info {
+    padding: 15px 25px; /* 增加左右內邊距，從20px增加到25px */
+    display: flex;
+    align-items: center;
+    color: var(--text-light);
+    font-size: 16px;  /* 增加字體大小 (從15px) */
+    border-top: 1px solid var(--border-color);
+    margin-top: 10px;
+}
+
+.company-info i {
+    margin-right: 15px;
+    font-size: 24px;
+    color: #999;
+}
+
+/* 主內容區 */
+.main-content {
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100vh;
+    background-color: var(--main-bg);
+    display: flex;
+    flex-direction: column;
+    width: calc(100vw - 300px); /* 計算剩餘寬度，300px是sidebar的寬度 */
+    position: relative;
+}
+
+header {
+    margin: 20px 20px 15px; /* 調整內容邊距而不是整體邊距 */
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+header h1 {
+    font-size: 28px;  /* 增加字體大小 (從24px) */
+    font-weight: 500;
+}
+
+.feature-modules {
+    margin: 0 20px 25px; /* 稍微減少底部間距 */
+}
+
+.module-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.module {
+    text-align: center;
+    width: calc(16.666% - 15px);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.module:hover {
+    transform: translateY(-5px);
+}
+
+.module-icon {
+    width: 90px; /* 調整寬度，從100px改為90px */
+    height: 90px; /* 調整高度，從100px改為90px */
+    border-radius: 8px;
+    margin: 0 auto 10px; /* 增加底部間距 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.red-bg {
+    background-color: var(--primary-red); /* 確保使用紅色背景 */
+}
+
+.module-icon i {
+    font-size: 36px; /* 調整圖標大小，從40px改為36px */
+    color: white;
+}
+
+.module-name {
+    font-size: 14px; /* 調整字體大小，從16px改為14px */
+    color: var(--text-dark);
+    margin-top: 5px; /* 減少上邊距 */
+    line-height: 1.2; /* 添加行高以處理多行文字 */
+}
+
+/* 專案選項卡 */
+.project-tabs {
+    display: flex;
+    background-color: transparent; /* 移除整體背景色 */
+    border-radius: 0;
+    width: fit-content;
+    max-width: 100%;
+    padding: 0 20px; /* 加一點水平內邊距 */
+    margin-bottom: 0;
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+}
+
+.tab {
+    padding: 10px 20px;
+    background: #333; /* 默認背景色 */
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #fff;
+    border-radius: 12px 12px 0 0; /* 增加圓角半徑，從5px增加到12px */
+    font-weight: 500;
+    min-width: 150px; /* 設置最小寬度 */
+    text-align: center; /* 文字居中 */
+}
+
+.tab.active {
+    background-color: #222; /* 深色背景 */
+    color: #fff;
+}
+
+.tab:not(.active) {
+    background-color: #999; /* 非活動標籤為灰色 */
+    color: #333; /* 深色文字 */
+    opacity: 0.9;
+}
+
+.tab:hover:not(.active) {
+    background-color: #888; /* 懸停時稍微變暗 */
+}
+
+/* 創建一個包含整個項目區域的容器 */
+.projects-section {
+    margin-bottom: 0; /* 移除底部間距 */
+    position: relative;
+    flex-grow: 1; /* 讓專案區塊填滿剩餘空間 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 專案卡片區域 */
+.project-carousel {
+    position: relative;
+    margin-top: 0;
+    background-color: #222;
+    padding: 40px 0; /* 只保留上下內邊距，左右內邊距在.project-cards中處理 */
+    border-radius: 0 12px 0 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box; /* 確保邊距計算正確 */
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px; /* 增加按鈕寬度 */
+    height: 80%; /* 保持高比例 */
+    background-color: #888888; /* 淺灰色 */
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-nav:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.carousel-nav.prev {
+    left: 0;
+    border-radius: 0 20px 20px 0; /* 保持圓角 */
+}
+
+.carousel-nav.next {
+    right: 0;
+    border-radius: 20px 0 0 20px; /* 保持圓角 */
+}
+
+.project-cards {
+    display: grid; /* 還原為網格布局 */
+    grid-template-columns: repeat(6, 1fr); /* 6個等寬列 */
+    grid-gap: 15px; /* 網格間距 */
+    padding: 20px 60px; /* 增加左右內邊距，給翻頁按鈕留出空間 */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin: 0 auto; /* 居中對齊 */
+}
+
+.project-card {
+    width: 100%; /* 寬度由網格決定 */
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: transparent;
+    position: relative;
+    opacity: 1; /* 默認完全可見 */
+    transition: opacity 0.3s ease-in-out; /* 添加透明度過渡動畫 */
+    display: block; /* 確保始終顯示 */
+}
+
+.project-card.hidden {
+    display: none; /* 完全隱藏而不是透明 */
+}
+
+.card-poster {
+    height: 300px;
+    background-color: #555;
+    border-radius: 10px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+}
+
+.card-status {
+    position: relative;
+    margin-top: 10px;
+    padding: 10px; /* 增加垂直內邊距 */
+    text-align: center;
+    color: white;
+    font-size: 16px; /* 增加字體大小 */
+    font-weight: 500;
+    border-radius: 15px; /* 增加圓角半徑，使其更圓 */
+    max-width: 100%;
+    margin-bottom: 10px;
+}
+
+.card-status.green {
+    background-color: var(--green-status);
+}
+
+.card-status.yellow {
+    background-color: var(--yellow-status);
+}
+
+.card-status.red {
+    background-color: var(--red-status);
+}
+
+.card-actions {
+    display: flex;
+    padding: 15px 0; /* 調整內邊距 */
+    gap: 15px;
+}
+
+.btn-open, .btn-share {
+    flex: 1;
+    padding: 10px 0; /* 增加垂直內邊距 */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: #1f1f1f; /* 稍微暗一點的背景而不是完全透明 */
+    border-radius: 30px; /* 大幅增加圓角半徑，使按鈕更圓 */
+    cursor: pointer;
+    font-size: 16px; /* 增加字體大小 */
+    transition: background-color 0.2s;
+    color: white;
+    font-weight: 500; /* 加粗一點 */
+}
+
+.btn-open:hover, .btn-share:hover {
+    background-color: rgba(255, 255, 255, 0.15); /* 懸停時的半透明背景 */
+}
+
+.card-info {
+    padding: 5px 0; /* 調整內邊距 */
+    color: white; /* 文字改為白色 */
+}
+
+.card-info h3 {
+    font-size: 20px; /* 增加字體大小 */
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: white; /* 確保標題是白色 */
+}
+
+.card-info p {
+    color: rgba(255, 255, 255, 0.7); /* 使用半透明白色 */
+    font-size: 14px; /* 增加字體大小 */
+    margin-bottom: 5px;
+}
+
+.card-edited {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px; /* 增加頂部間距 */
+    font-size: 12px; /* 增加字體大小 */
+    color: rgba(255, 255, 255, 0.5); /* 使用更淡的半透明白色 */
+}
+
+/* 輪播導航點 */
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px; /* 增加間距 */
+    padding-bottom: 15px;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    z-index: 3;
+}
+
+.dot {
+    width: 10px; /* 增加寬度 */
+    height: 10px; /* 增加高度 */
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3); /* 半透明白色 */
+    cursor: pointer;
+}
+
+.dot.active {
+    background-color: rgba(255, 255, 255, 0.8); /* 活動點使用更明亮的白色 */
+}

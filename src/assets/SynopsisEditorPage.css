@@ -1,0 +1,477 @@
+/* SynopsisEditorPage.css - Styles for the Synopsis Editor */
+
+:root {
+    --editor-bg: #f0f2f5; /* Light grey background for the page */
+    --editor-card-bg: #ffffff; /* White background for sections */
+    --editor-text-primary: #333;
+    --editor-text-secondary: #555;
+    --editor-border-color: #d9d9d9;
+    --editor-primary-accent: #e63946; /* Primary red from HomePage */
+    --editor-input-bg: #f9f9f9;
+    --editor-input-border: #ccc;
+    --editor-button-hover-bg: #c42834;
+}
+
+.synopsis-editor-container {
+    width: 100%;
+    height: 100vh;
+    background-color: var(--editor-bg);
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+.main-content-synopsis {
+    width: 100%;
+    max-width: 1600px;
+    height: 2100px;
+    background-color: var(--editor-card-bg);
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: var(--editor-text-primary);
+    display: flex;
+    gap: 40px; /* 增加間距，從30px調整到40px */
+    align-items: flex-start;
+}
+
+/* 左欄：表單 */
+.form-column {
+    flex: 5; /* 增加左欄比例，從4調整到5 */
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex-shrink: 0;
+    flex-grow: 1;
+    overflow-y: visible;
+}
+
+/* 右欄：AI 互動 */
+.ai-column {
+    flex: 1.0; /* 減少右欄比例，從2調整到1.5 */
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    position: relative;
+    top: 0;
+    height: auto;
+    overflow-y: visible;
+}
+
+.synopsis-header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--editor-border-color);
+    padding-bottom: 20px;
+}
+
+.synopsis-header h1 {
+    font-size: 2.2em;
+    color: var(--editor-primary-accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.synopsis-header p {
+    font-size: 1.1em;
+    color: var(--editor-text-secondary);
+}
+
+.form-sections {
+    display: grid; /* 改為網格佈局 */
+    grid-template-columns: 1fr; /* 默認為單欄 */
+    gap: 25px;
+}
+
+/* 建立雙欄的section行 */
+.form-sections .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 35px; /* 增加卡片之間的間距，從25px調整到35px */
+}
+
+/* 將Additional Details單獨一行 */
+.form-sections .full-width {
+    grid-column: 1 / -1; /* 跨越所有欄位 */
+    margin-top: 10px; /* 為Additional Details區塊增加上邊距 */
+}
+
+.act-section {
+    background-color: #fdfdfd;
+    padding: 30px; /* 增加內邊距，從25px到30px */
+    border-radius: 8px; /* 略微增加圓角 */
+    border: 1px solid var(--editor-border-color);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    min-height: 420px; /* 設定最小高度，從原來的大約370px提高到420px */
+    display: flex;
+    flex-direction: column;
+}
+
+.act-section h2 {
+    font-size: 1.6em;
+    color: var(--editor-primary-accent);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    font-weight: 500;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group:last-child {
+    margin-bottom: 0;
+}
+
+.input-group label {
+    display: block;
+    font-size: 1em;
+    font-weight: 500;
+    color: var(--editor-text-secondary);
+    margin-bottom: 8px;
+}
+
+.input-group textarea {
+    width: 100%;
+    height: 80px; /* 設定固定的緊湊高度 */
+    resize: vertical; /* 允許用戶垂直調整大小 */
+    overflow-y: auto; /* 如果內容超出，則顯示滾動條 */
+    padding: 12px;
+    border: 1px solid var(--editor-input-border);
+    border-radius: 4px;
+    font-size: 1em;
+    line-height: 1.5;
+    background-color: var(--editor-input-bg);
+    color: var(--editor-text-primary);
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-group textarea:focus {
+    outline: none;
+    border-color: var(--editor-primary-accent);
+    box-shadow: 0 0 0 2px rgba(230, 57, 70, 0.2);
+    background-color: #fff;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    accent-color: var(--editor-primary-accent); /* Modern way to color checkboxes */
+    cursor: pointer;
+}
+
+.checkbox-group .checkbox-label {
+    font-size: 0.95em;
+    color: var(--editor-text-secondary);
+    font-weight: normal; /* Override general label style if needed */
+    margin-bottom: 0; /* Override general label style if needed */
+    cursor: pointer;
+}
+
+.submit-btn.synopsis-action-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--editor-primary-accent);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* 主生成按鈕樣式，確保其在 form-column 中正確顯示 */
+.main-generate-btn {
+    width: 100%; /* 或根據設計調整 */
+}
+
+.submit-btn.synopsis-action-btn i {
+    margin-right: 8px;
+}
+
+.submit-btn.synopsis-action-btn:hover {
+    background-color: var(--editor-button-hover-bg);
+}
+
+.ai-interaction-section {
+    margin-top: 90px; /* 增加頂部邊距，讓 AI 區塊往下移動 */
+    padding-top: 0;
+    border-top: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.ai-interaction-section h2 {
+    font-size: 1.8em;
+    color: var(--editor-primary-accent);
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.ai-response-box {
+    background-color: #2d3748;
+    color: #e2e8f0;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    min-height: 180px;
+    max-height: 1600px; /* 減少最大高度，從2000px調整到500px */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    width: 100%;
+    overflow-y: auto;
+}
+
+/* 移除原來的 pre 樣式，改為 Markdown 內容樣式 */
+.markdown-content {
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    font-size: 1.1em; /* 增加字體大小，從0.95em調整到1.1em */
+}
+
+/* Markdown 標題樣式 */
+.markdown-content h1 {
+    color: #63b3ed;
+    font-size: 1.6em; /* 增加字體大小，從1.5em調整到1.6em */
+    margin: 1.2em 0 0.8em 0;
+    font-weight: 600;
+}
+
+.markdown-content h2 {
+    color: #81e6d9;
+    font-size: 1.4em; /* 增加字體大小，從1.3em調整到1.4em */
+    margin: 1em 0 0.6em 0;
+    font-weight: 500;
+}
+
+.markdown-content h3 {
+    color: #fbb6ce;
+    font-size: 1.2em; /* 增加字體大小，從1.1em調整到1.2em */
+    margin: 0.8em 0 0.4em 0;
+    font-weight: 500;
+}
+
+/* Markdown 段落樣式 */
+.markdown-content p {
+    margin: 0.8em 0;
+    color: #e2e8f0;
+}
+
+.placeholder-text {
+    color: #a0aec0;
+    font-style: italic;
+}
+
+/* Markdown 列表樣式 */
+.markdown-content ul, .markdown-content ol {
+    margin: 0.8em 0;
+    padding-left: 1.5em;
+}
+
+.markdown-content li {
+    margin: 0.4em 0;
+    color: #e2e8f0;
+}
+
+/* Markdown 程式碼樣式 */
+.markdown-content code {
+    background-color: #4a5568;
+    color: #ffd89b;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2em; /* 增加字體大小，從0.9em調整到1em */
+}
+
+.markdown-content pre {
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+    border-radius: 5px;
+    padding: 1em;
+    margin: 1em 0;
+    overflow-x: auto;
+}
+
+.markdown-content pre code {
+    background: none;
+    padding: 0;
+    color: #e2e8f0;
+}
+
+/* Markdown 強調樣式 */
+.markdown-content strong, .markdown-content b {
+    color: #f7fafc;
+    font-weight: 600;
+}
+
+.markdown-content em, .markdown-content i {
+    color: #cbd5e0;
+    font-style: italic;
+}
+
+/* Markdown 分隔線樣式 */
+.markdown-content hr {
+    border: none;
+    border-top: 1px solid #4a5568;
+    margin: 1.5em 0;
+}
+
+/* Markdown 引用樣式 */
+.markdown-content blockquote {
+    border-left: 4px solid #63b3ed;
+    padding-left: 1em;
+    margin: 1em 0;
+    color: #cbd5e0;
+    font-style: italic;
+}
+
+/* Markdown 表格樣式 */
+.markdown-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+}
+
+.markdown-content th, .markdown-content td {
+    border: 1px solid #4a5568;
+    padding: 0.5em;
+    text-align: left;
+}
+
+.markdown-content th {
+    background-color: #4a5568;
+    color: #f7fafc;
+    font-weight: 600;
+}
+
+/* Markdown 連結樣式 */
+.markdown-content a {
+    color: #63b3ed;
+    text-decoration: underline;
+}
+
+.markdown-content a:hover {
+    color: #90cdf4;
+}
+
+.follow-up-section {
+    margin-top: 0;
+    width: 100%; /* 確保寬度佔滿父容器 */
+    display: flex;
+    flex-direction: column;
+}
+
+.follow-up-section label {
+    display: block;
+    font-size: 1em;
+    font-weight: 500;
+    color: var(--editor-text-secondary);
+    margin-bottom: 8px;
+}
+
+.follow-up-section textarea {
+    width: 100%;
+    min-height: 80px; /* 減少最小高度，從100px到80px */
+    padding: 10px; /* 減少內邊距，從12px到10px */
+    border: 1px solid var(--editor-input-border);
+    border-radius: 4px;
+    font-size: 0.95em; /* 略微減少字體大小 */
+    line-height: 1.5;
+    background-color: var(--editor-input-bg);
+    color: var(--editor-text-primary);
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 15px;
+    resize: vertical; /* 允許用戶垂直調整大小 */
+}
+
+.follow-up-section textarea:focus {
+    outline: none;
+    border-color: var(--editor-primary-accent);
+    box-shadow: 0 0 0 2px rgba(230, 57, 70, 0.2);
+    background-color: #fff;
+}
+
+.follow-up-section .submit-btn.synopsis-action-btn {
+    margin-top: 0;
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) { /* 調整斷點，從1024px到1400px */
+    .form-sections .row {
+        grid-template-columns: 1fr; /* 在較小螢幕上改為單欄 */
+    }
+
+    .act-section {
+        min-height: auto; /* 在響應式佈局中取消固定高度 */
+    }
+}
+
+@media (max-width: 1024px) {
+    .main-content-synopsis {
+        flex-direction: column;
+        gap: 25px;
+        max-width: 900px;
+    }
+
+    .form-column,
+    .ai-column {
+        flex-basis: auto;
+        width: 100%;
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    .ai-interaction-section {
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid var(--editor-border-color);
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content-synopsis {
+        padding: 20px;
+    }
+    .synopsis-header h1 {
+        font-size: 1.8em;
+    }
+    .synopsis-header p {
+        font-size: 1em;
+    }
+    .act-section h2 {
+        font-size: 1.4em;
+    }
+    .input-group textarea {
+        height: 70px;
+    }
+}
+
+/* 為 AI 標題添加特殊樣式，讓它的字體大小與 Synopsis Editor 標題一致 */
+.ai-title {
+    font-size: 2.2em !important; /* 與 .synopsis-header h1 相同的字體大小 */
+    color: var(--editor-primary-accent);
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
