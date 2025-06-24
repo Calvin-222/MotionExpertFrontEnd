@@ -4,13 +4,14 @@
       <!-- 左側導航欄 -->
       <div class="sidebar">
         <!-- 用戶資訊 -->
+        <!-- Replace the hardcoded user info section -->
         <div class="user-info">
           <div class="user-avatar">
             <i class="fa fa-user"></i>
           </div>
           <div class="user-details">
-            <h3>Norman Chan</h3>
-            <p>normanchan@adfilms.com</p>
+            <h3>{{ currentUser.username || 'Loading...' }}</h3>
+            <button @click="logout" class="logout-btn">Logout</button>
           </div>
         </div>
 
@@ -154,6 +155,14 @@
             </router-link>
             <div class="module">
               <div class="module-icon red-bg">
+                <i class="fas fa-cube"></i>
+              </div>
+              <div class="module-name">Synopsis Editor
+
+              </div>
+            </div>
+            <div class="module">
+              <div class="module-icon red-bg">
                 <i class="fas fa-user-friends"></i>
               </div>
               <div class="module-name">Character Creator</div>
@@ -234,6 +243,7 @@
 </template>
 
 <script>
+import { authService } from '@/services/authService'
 export default {
   name: 'HomePage',
   data() {
@@ -241,6 +251,7 @@ export default {
       activeTab: 'myProjects',
       currentPage: 0,
       cardsPerPage: 6,
+      currentUser: {},
       projects: [
         {
           title: 'Casino Fool',
@@ -350,6 +361,8 @@ export default {
       ]
     }
   },
+
+
   computed: {
     totalPages() {
       return Math.ceil(this.projects.length / this.cardsPerPage)
@@ -373,10 +386,25 @@ export default {
     },
     goToPage(pageIndex) {
       this.currentPage = pageIndex
+    },
+    logout() {
+      authService.logout()
+      this.$router.push('/login')
     }
   },
-  mounted() {
-    // 鍵盤導航支援
+ async mounted() { // Combine both mounted functions
+    // Load current user data
+    const user = authService.getUser()
+    if (user) {
+      this.currentUser = user
+    } else {
+      const userData = await authService.getCurrentUser()
+      if (userData) {
+        this.currentUser = userData
+      }
+    }
+
+    // Your existing keyboard navigation support
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowLeft' && this.currentPage > 0) {
         this.prevPage()
@@ -384,7 +412,7 @@ export default {
         this.nextPage()
       }
     })
-  }
+  },
 }
 </script>
 
