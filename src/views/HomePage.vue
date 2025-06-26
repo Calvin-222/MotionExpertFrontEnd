@@ -147,7 +147,7 @@
               </div>
               <div class="module-name">Story Builder</div>
             </div>
-            <router-link to="/synopsis-editor" class="module" style="text-decoration: none; color: inherit;">
+            <router-link to="/synopsis-editor" class="module no-highlight" style="text-decoration: none; color: inherit;">
               <div class="module-icon red-bg">
                 <i class="fas fa-cube"></i>
               </div>
