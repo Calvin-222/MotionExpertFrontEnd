@@ -84,7 +84,7 @@ export default {
           localStorage.setItem('user', JSON.stringify(response.user))
 
           // Redirect to home or intended route
-          const redirect = this.$route.query.redirect || '/'
+          const redirect = '/'
           this.$router.push(redirect)
         } else {
           this.errorMessage = response.message

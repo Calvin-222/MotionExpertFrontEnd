@@ -147,12 +147,14 @@
               </div>
               <div class="module-name">Story Builder</div>
             </div>
-            <router-link to="/synopsis-editor" class="module" style="text-decoration: none; color: inherit;">
-                <div class="module-icon red-bg">
-                  <i class="fas fa-cube"></i>
-                </div>
-              <div class="module-name">Synopsis Editor</div>
-            </router-link>
+            <div class="module">
+              <div class="module-icon red-bg">
+                <i class="fas fa-cube"></i>
+              </div>
+              <div class="module-name">Synopsis Editor
+
+              </div>
+            </div>
             <div class="module">
               <div class="module-icon red-bg">
                 <i class="fas fa-user-friends"></i>
