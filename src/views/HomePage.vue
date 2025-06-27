@@ -147,14 +147,12 @@
               </div>
               <div class="module-name">Story Builder</div>
             </div>
-            <div class="module">
-              <div class="module-icon red-bg">
-                <i class="fas fa-cube"></i>
-              </div>
-              <div class="module-name">Synopsis Editor
-
-              </div>
-            </div>
+            <router-link to="/synopsis-editor" class="module" style="text-decoration: none; color: inherit;">
+                <div class="module-icon red-bg">
+                  <i class="fas fa-cube"></i>
+                </div>
+              <div class="module-name">Synopsis Editor</div>
+            </router-link>
             <div class="module">
               <div class="module-icon red-bg">
                 <i class="fas fa-user-friends"></i>
@@ -238,6 +236,7 @@
 
 <script>
 import { authService } from '@/services/authService'
+import { RouterLink } from 'vue-router'
 export default {
   name: 'HomePage',
   data() {
@@ -367,6 +366,10 @@ export default {
       const startIndex = this.currentPage * this.cardsPerPage
       const endIndex = startIndex + this.cardsPerPage
       return index >= startIndex && index < endIndex
+    },
+    goToSynopsisEditor() {
+      console.log('Clicked!');
+      this.$router.push('/synopsis-editor');
     },
     prevPage() {
       if (this.currentPage > 0) {
