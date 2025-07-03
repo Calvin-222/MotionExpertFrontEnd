@@ -2,10 +2,9 @@
   <div class="register-page">
     <div class="register-container">
       <div class="register-header">
-        <!-- Logo (update path to your logo) -->
         <div class="register-logo">
-          <i class="fa fa-film"></i>
-          <!-- <img src="@/assets/logo.jpg" alt="Motion Expert Logo" /> -->
+
+           <img src="@/components/icons/motionexpaiicon.svg" alt="Motion Expert Logo" />
         </div>
         <h1>Motion Expert</h1>
         <p>Create your account</p>

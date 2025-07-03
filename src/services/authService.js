@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000/api'
+
 
 const authService = {
   // 統一 token 存儲鍵名
@@ -7,7 +7,7 @@ const authService = {
   // 修復登錄方法
   async login(username, password) {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ const authService = {
   // 註冊方法
   async register(username, password, confirmPassword) {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await fetch(`/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ const authService = {
     if (!token) return null
 
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+      const response = await fetch(`/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

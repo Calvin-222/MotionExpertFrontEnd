@@ -3,8 +3,10 @@ import HomePage from '../views/HomePage.vue'
 import SynopsisEditorPage from '@/views/SynopsisEditorPage.vue'
 import LoginPage from '@/views/Login.vue'
 import RegisterPage from '@/views/Register.vue'
+import addFriends from '@/views/addFriends.vue'
 import RAGPage from '@/views/Rag.vue' // 添加 RAG 頁面導入
 import { authService } from '@/services/authService'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +33,12 @@ const router = createRouter({
       path: '/synopsis-editor',
       name: 'synopsis-editor',
       component: SynopsisEditorPage,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/add-friends',
+      name: 'add-friends',
+      component: addFriends,
       meta: { requiresAuth: true },
     },
     // 添加 RAG 相關路由
@@ -65,6 +73,8 @@ const router = createRouter({
       component: () => import('@/views/NotFound.vue'),
       meta: { requiresAuth: false },
     },
+    // 添加好友頁面
+
   ],
 })
 

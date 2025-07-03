@@ -2,6 +2,9 @@
   <div class="login-page">
     <div class="login-container">
       <div class="login-header">
+        <div class="login-logo">
+          <img src="@/components/icons/motionexpaiicon.svg" alt="Motion Expert Logo" />
+        </div>
         <h1>Motion Expert</h1>
         <p>Please sign in to your account</p>
       </div>

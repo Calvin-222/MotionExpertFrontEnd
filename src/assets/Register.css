@@ -38,8 +38,10 @@
 .register-logo img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 13px;
+  margin: 0; /* Reset any default margins */
+  vertical-align: middle; /* Add this */
 }
 
 .register-logo i {

@@ -12,9 +12,10 @@
           <div class="user-details">
             <h3>{{ currentUser.username || 'Loading...' }}</h3>
             <button @click="logout" class="logout-btn">Logout</button>
+            <br>
+            <button @click="addfriends" class="logout-btn">Add friends</button>
           </div>
         </div>
-
         <!-- 主要導航 -->
         <nav class="main-nav">
           <ul>
@@ -141,20 +142,18 @@
               </div>
               <div class="module-name">Project Overview</div>
             </div>
-            <div class="module">
-              <div class="module-icon red-bg">
-                <i class="fas fa-book"></i>
-              </div>
-              <div class="module-name">Story Builder</div>
-            </div>
-            <div class="module">
-              <div class="module-icon red-bg">
-                <i class="fas fa-cube"></i>
-              </div>
-              <div class="module-name">Synopsis Editor
-
-              </div>
-            </div>
+            <router-link to="/rag" class="module" style="text-decoration: none; color:inherit;">
+                <div class="module-icon red-bg">
+                  <i class="fas fa-cube"></i>
+                </div>
+              <div class="module-name">Rag trainer</div>
+            </router-link>
+            <router-link to="/synopsis-editor" class="module" style="text-decoration: none; color:inherit;">
+                <div class="module-icon red-bg">
+                  <i class="fas fa-cube"></i>
+                </div>
+              <div class="module-name">Synopsis Editor</div>
+            </router-link>
             <div class="module">
               <div class="module-icon red-bg">
                 <i class="fas fa-user-friends"></i>
@@ -238,6 +237,7 @@
 
 <script>
 import { authService } from '@/services/authService'
+// eslint-disable-next-line no-unused-vars
 import { RouterLink } from 'vue-router'
 export default {
   name: 'HomePage',
@@ -389,6 +389,9 @@ export default {
     logout() {
       authService.logout()
       this.$router.push('/login')
+    },
+    addfriends() {
+      this.$router.push('/add-Friends')
     }
   },
  async mounted() { // Combine both mounted functions
