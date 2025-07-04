@@ -15,10 +15,9 @@
     <div class="results" v-if="users.length > 0">
       <p>Found {{ users.length }} user(s)</p>
       <div class="users-list">
-        <div v-for="user in users" :key="user.userid" class="user-item">
+        <div v-for="user in users" :key="user.username" class="user-item">
           <strong>{{ user.username }}</strong>
-          <span class="user-id">{{ user.userid }}</span>
-          <span class="user-date">{{ formatDate(user.created_at) }}</span>
+          <button @click="AddFriend(user.username)" class="action-button"></button>
         </div>
       </div>
     </div>
@@ -34,6 +33,7 @@
 </template>
 
 <script>
+import '@/assets/SearchUsers.css'
 export default {
   name: 'UserSearch',
   data() {
@@ -61,7 +61,7 @@ export default {
     this.searchPerformed = true;
 
     try {
-      const response = await fetch(`/api/add-friends?search=${encodeURIComponent(this.searchTerm)}`, {
+      const response = await fetch(`/api/search-users?search=${encodeURIComponent(this.searchTerm)}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -82,10 +82,33 @@ export default {
       this.users = [];
     }
   },
+   async AddFriend(username) {
+    try {
+      const token = localStorage.getItem('token'); // Your JWT token
 
-    formatDate(dateString) {
-      return new Date(dateString).toLocaleDateString();
+      const response = await fetch('/api/add-friend', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ friendUsername: username })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(`Friend request sent to ${username}!`);
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error adding friend:', error);
+      alert('Failed to send friend request');
     }
   }
+
+  }
+
 }
 </script>

@@ -391,7 +391,7 @@ export default {
       this.$router.push('/login')
     },
     addfriends() {
-      this.$router.push('/add-Friends')
+      this.$router.push('/search-users') // Redirect to the search users page
     }
   },
  async mounted() { // Combine both mounted functions

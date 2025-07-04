@@ -3,7 +3,7 @@ import HomePage from '../views/HomePage.vue'
 import SynopsisEditorPage from '@/views/SynopsisEditorPage.vue'
 import LoginPage from '@/views/Login.vue'
 import RegisterPage from '@/views/Register.vue'
-import addFriends from '@/views/addFriends.vue'
+import SearchUsers from '@/views/SearchUsers.vue'
 import RAGPage from '@/views/Rag.vue' // 添加 RAG 頁面導入
 import { authService } from '@/services/authService'
 
@@ -36,9 +36,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/add-friends',
-      name: 'add-friends',
-      component: addFriends,
+      path: '/search-users',
+      name: 'search-users',
+      component: SearchUsers,
       meta: { requiresAuth: true },
     },
     // 添加 RAG 相關路由
