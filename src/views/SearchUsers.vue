@@ -1,8 +1,8 @@
 <template>
-  <div class="user-search-container">
+  <div class="user-search">
     <h1>User Search</h1>
 
-    <div class="search-box">
+    <div class="search-container">
       <input
         v-model="searchTerm"
         @input="handleSearch"
@@ -17,7 +17,7 @@
       <div class="users-list">
         <div v-for="user in users" :key="user.username" class="user-item">
           <strong>{{ user.username }}</strong>
-          <button @click="AddFriend(user.username)" class="action-button"></button>
+          <button @click="AddFriend(user.username)" class="action-button">Add Friend</button>
         </div>
       </div>
     </div>
@@ -98,7 +98,7 @@ export default {
       const data = await response.json();
 
       if (data.success) {
-        alert(`Friend request sent to ${username}!`);
+        alert(`Added ${username} as friend!`);
       } else {
         alert(`Error: ${data.message}`);
       }

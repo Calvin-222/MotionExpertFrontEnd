@@ -4,6 +4,7 @@
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
+
 }
 
 .search-container {
@@ -21,8 +22,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  border-color: #e63946;
+  box-shadow: 0 0 0 3px rgba(255, 38, 56, 0.3);
 }
 
 .results {
@@ -39,6 +40,8 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 .user-item {
@@ -65,7 +68,7 @@
 }
 
 .action-button {
-  background: #007bff;
+  background: #e63946;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -77,11 +80,11 @@
 }
 
 .action-button:hover {
-  background: #0056b3;
+  background: #e63946;
 }
 
 .action-button:active {
-  background: #004085;
+  background: #f94d5b;
   transform: translateY(1px);
 }
 
