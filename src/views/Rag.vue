@@ -416,7 +416,7 @@ export default {
 
     // 載入用戶信息
     async loadUserInfo() {
-      this.token = localStorage.getItem('authToken')
+      this.token = localStorage.getItem('token')
 
       if (!this.token) {
         throw new Error('請重新登錄')
@@ -436,7 +436,7 @@ export default {
       } catch (error) {
         console.error('載入用戶信息失敗:', error)
         if (error.response?.status === 401 || error.response?.status === 403) {
-          localStorage.removeItem('authToken')
+          localStorage.removeItem('token')
           throw new Error('登錄已過期，請重新登錄')
         }
         throw error
@@ -624,7 +624,7 @@ export default {
         if (error.response) {
           if (error.response.status === 401 || error.response.status === 403) {
             errorMessage = '認證失敗，請重新登錄'
-            localStorage.removeItem('authToken')
+            localStorage.removeItem('token')
             this.$router.push('/login')
           } else if (error.response.data?.message) {
             errorMessage = error.response.data.message

@@ -79,8 +79,8 @@ const router = createRouter({
 })
 
 // Route guard for authentication
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = authService.isAuthenticated()
+router.beforeEach(async (to, from, next) => {
+  const isAuthenticated = await authService.isAuthenticated()
 
   // 設置頁面標題
   if (to.meta.title) {
