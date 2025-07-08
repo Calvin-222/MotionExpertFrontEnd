@@ -101,7 +101,7 @@ const authService = {
 
   // 添加數據清理方法
   cleanupStorage() {
-    const keysToRemove = ['token', 'user']
+    const keysToRemove = [this.TOKEN_KEY, 'user']
     keysToRemove.forEach((key) => {
       if (localStorage.getItem(key)) {
         localStorage.removeItem(key)
@@ -112,12 +112,7 @@ const authService = {
 
   // 修復登出方法
   logout() {
-    const currentToken = localStorage.getItem('token')
-    console.log('🔑 Token being removed:', currentToken)
-
     // 清除所有認證相關數據
-    localStorage.removeItem(this.TOKEN_KEY)
-    localStorage.removeItem('user')
     this.cleanupStorage()
     console.log('✅ 已登出，清除所有認證信息')
   },

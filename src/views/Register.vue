@@ -113,8 +113,7 @@ export default {
 
           // Redirect after a short delay
           setTimeout(() => {
-            const redirect = this.$route.query.redirect || '/'
-            this.$router.push(redirect)
+            this.$router.push('/')
           }, 1500)
         } else {
           this.errorMessage = response.message

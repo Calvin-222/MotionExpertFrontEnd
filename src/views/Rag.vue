@@ -317,7 +317,7 @@
 
 <script>
 import axios from 'axios'
-
+import { authService } from '@/services/authService'
 export default {
   name: 'RAGPage',
   data() {
@@ -359,7 +359,7 @@ export default {
       notification: null,
 
       // API 配置
-      baseURL: 'http://localhost:3000/api',
+      baseURL: '/api',
 
       // 自動刷新定時器
       statusTimer: null,
@@ -398,7 +398,7 @@ export default {
         this.globalLoading = true
         this.loadingMessage = '正在初始化 RAG Engine 系統...'
 
-        await this.loadUserInfo()
+
         await this.checkRAGSystem()
 
         this.showNotification('RAG Engine 系統已準備就緒！', 'success')
@@ -414,34 +414,7 @@ export default {
       }
     },
 
-    // 載入用戶信息
-    async loadUserInfo() {
-      this.token = localStorage.getItem('token')
 
-      if (!this.token) {
-        throw new Error('請重新登錄')
-      }
-
-      try {
-        const response = await axios.get(`${this.baseURL}/auth/me`, {
-          headers: { 'Authorization': `Bearer ${this.token}` }
-        })
-
-        if (response.data.success) {
-          this.userInfo = response.data.user
-          console.log('用戶信息載入成功:', this.userInfo)
-        } else {
-          throw new Error('認證失敗')
-        }
-      } catch (error) {
-        console.error('載入用戶信息失敗:', error)
-        if (error.response?.status === 401 || error.response?.status === 403) {
-          localStorage.removeItem('token')
-          throw new Error('登錄已過期，請重新登錄')
-        }
-        throw error
-      }
-    },
 
     // 檢查 RAG 系統狀態
     async checkRAGSystem() {
@@ -886,7 +859,7 @@ export default {
 
     logout() {
       if (confirm('確定要登出嗎？')) {
-        localStorage.clear()
+        authService.logout()
         this.$router.push('/login')
       }
     },
@@ -947,7 +920,7 @@ export default {
 </script>
 
 <style scoped>
-@import '@/assets/styles/rag.css'
+@import '@/assets/rag.css'
 
 </style>
 
