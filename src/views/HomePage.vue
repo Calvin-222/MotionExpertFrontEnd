@@ -10,7 +10,7 @@
             <i class="fa fa-user"></i>
           </div>
           <div class="user-details">
-            <h3>{{ currentUser.username || 'Loading...' }}</h3>
+            <h3>{{  username}}</h3>
             <button @click="logout" class="logout-btn">Logout</button>
             <br>
             <button @click="addfriends" class="logout-btn">Add friends</button>
@@ -361,6 +361,14 @@ export default {
   computed: {
     totalPages() {
       return Math.ceil(this.projects.length / this.cardsPerPage)
+    },
+    username() {
+    const user = authService.getUser()
+    return user?.username || 'Loading...'
+  },
+    userid(){
+      const user = authService.getUser()
+      return user?.userid || 'Loading...'
     }
   },
   methods: {
@@ -394,17 +402,7 @@ export default {
       this.$router.push('/search-users') // Redirect to the search users page
     }
   },
- async mounted() { // Combine both mounted functions
-    // Load current user data
-    const user = authService.getUser()
-    if (user) {
-      this.currentUser = user
-    } else {
-      const userData = await authService.getCurrentUser()
-      if (userData) {
-        this.currentUser = userData
-      }
-    }
+  mounted() { // Combine both mounted functions
 
     // Your existing keyboard navigation support
     document.addEventListener('keydown', (e) => {

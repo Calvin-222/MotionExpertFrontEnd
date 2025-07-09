@@ -23,7 +23,7 @@
       </div>
       <div class="header-right">
         <div class="user-profile">
-          <span class="user-name">{{ userInfo.username || '用戶' }}</span>
+          <span class="user-name">{{ username }}</span>
           <button @click="logout" class="logout-btn">登出</button>
         </div>
       </div>
@@ -322,13 +322,6 @@ export default {
   name: 'RAGPage',
   data() {
     return {
-      // 用戶信息
-      userInfo: {
-        username: '',
-        userid: ''
-      },
-      token: null,
-
       // RAG 狀態 - 改為 Engine 概念
       ragStatus: {
         hasRAGEngine: false,
@@ -371,7 +364,17 @@ export default {
     engineCount() {
       return this.engines?.length || 0
     },
-
+    username() {
+      const user = authService.getUser()
+      return user?.username || 'Loading...'
+    },
+    userid(){
+      const user = authService.getUser()
+      return user?.userid || ''
+    },
+    token(){
+      return localStorage.getItem('token') || ''
+    },
     // 修改：Engine 級別的全域搜索條件
     canSendEngineMessage() {
       return this.selectedEngine &&
@@ -380,6 +383,7 @@ export default {
              this.currentMessage.trim() &&
              !this.isTyping
     }
+
   },
 
   async mounted() {
@@ -460,7 +464,7 @@ export default {
       try {
         console.log('正在載入用戶 RAG Engines...')
 
-        const response = await axios.get(`${this.baseURL}/rag/users/${this.userInfo.userid}/engines`, {
+        const response = await axios.get(`${this.baseURL}/rag/users/${this.userid}/engines`, {
           headers: { 'Authorization': `Bearer ${this.token}` }
         })
 
@@ -557,7 +561,7 @@ export default {
         console.log(`開始上傳文件: ${file.name}`)
 
         const response = await axios.post(
-          `${this.baseURL}/rag/users/${this.userInfo.userid}/upload`,
+          `${this.baseURL}/rag/users/${this.userid}/upload`,
           formData,
           {
             headers: {
@@ -634,7 +638,7 @@ export default {
 
         // 修正API路徑：使用正確的後端路由
         const response = await axios.post(
-          `${this.baseURL}/rag/users/${this.userInfo.userid}/engines/${this.selectedEngine.id}/query`,
+          `${this.baseURL}/rag/users/${this.userid}/engines/${this.selectedEngine.id}/query`,
           { question: message },
           { headers: { 'Authorization': `Bearer ${this.token}` } }
         )
@@ -706,7 +710,7 @@ export default {
 
         // 修正API路徑：使用正確的後端路由
         const response = await axios.delete(
-          `${this.baseURL}/rag/users/${this.userInfo.userid}/engines/${engine.id}`,
+          `${this.baseURL}/rag/users/${this.userid}/engines/${engine.id}`,
           {
             headers: { 'Authorization': `Bearer ${this.token}` }
           }
