@@ -59,13 +59,16 @@ export default {
     async searchUsers() {
     this.error = null;
     this.searchPerformed = true;
+    const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`/api/search-users?search=${encodeURIComponent(this.searchTerm)}`, {
+      const response = await fetch(`/api/friends/search-users?search=${encodeURIComponent(this.searchTerm)}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
+
       });
 
       const data = await response.json();
@@ -84,9 +87,9 @@ export default {
   },
    async AddFriend(username) {
     try {
-      const token = localStorage.getItem('token'); // Your JWT token
+      const token = localStorage.getItem('token');
 
-      const response = await fetch('/api/add-friend', {
+      const response = await fetch('/api/friends/add-friend', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

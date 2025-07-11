@@ -210,11 +210,13 @@ export default {
       this.aiResponse = `Sending synopsis to backend...\n\n--- Generated String Sent to Backend ---\n${this.generatedSynopsisString}`;
 
         try {
+        const token = localStorage.getItem('token');
         // 使用 Vite 代理，所以直接呼叫 /api/synopsis
         const response = await fetch('/api/synopsis', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({ synopsisString: this.generatedSynopsisString }),
         });
@@ -241,13 +243,14 @@ export default {
       const previousAIResponse = this.aiResponse;
 
       this.aiResponse = `${previousAIResponse}\n\n--- User Follow-up ---\n${this.followUpPrompt}\n\nSending follow-up to backend...`;
-
+      const token = localStorage.getItem('token');
       try {
         // 假設有一個 /api/synopsis/follow-up 端點
         const response = await fetch('/api/synopsis/follow-up', { // 您需要在後端新增此路由
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({
             followUpString: this.followUpPrompt // 修改此處以匹配後端期望

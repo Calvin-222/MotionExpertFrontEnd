@@ -527,7 +527,7 @@ export default {
           this.stopAutoRefresh()
           setTimeout(() => {
             this.startAutoRefresh()
-          }, 60000) // 1分鐘後重新開始自動刷新
+          }, 300000) // 5分鐘後重新開始自動刷新 I do not believe checking 1 min is good, if need quick 1 min too slow, no need too much queue, plus our rag has limited reasources. I chnanged to 5, maybe later delete this function
 
         } else {
           console.error('載入用戶 Engines 失敗:', error)
