@@ -6,7 +6,7 @@
     <div class="section">
       <h2>系統狀態檢查</h2>
       <button @click="checkBackendStatus">檢查後端連接</button>
-      <div class="response" :class="statusResponseClass" v-html="statusResponse"></div>
+      <!--<div class="response" :class="statusResponseClass" v-html="statusResponse"></div>-->
     </div>
 
     <!-- 登錄後顯示的部分 -->
@@ -36,14 +36,14 @@
             </div>
             <button type="submit">創建 RAG Engine</button>
           </form>
-          <div class="response" :class="createEngineResponseClass" v-html="createEngineResponse"></div>
+          <!--<div class="response" :class="createEngineResponseClass" v-html="createEngineResponse"></div>-->
         </div>
 
         <!-- 列出用戶的 RAG Engines -->
         <div>
           <h3>我的 RAG Engines</h3>
           <button @click="listEngines">刷新列表</button>
-          <div class="response" :class="listEnginesResponseClass" v-html="listEnginesResponse"></div>
+          <!--<div class="response" :class="listEnginesResponseClass" v-html="listEnginesResponse"></div>-->
           <table v-if="userEngines.length > 0">
             <thead>
               <tr>
@@ -106,7 +106,7 @@
             </div>
             <button type="submit">上傳文件</button>
           </form>
-          <div class="response" :class="uploadFileResponseClass" v-html="uploadFileResponse"></div>
+          <!--<div class="response" :class="uploadFileResponseClass" v-html="uploadFileResponse"></div>-->
         </div>
 
         <!-- 列出引擎的文件 -->
@@ -121,7 +121,7 @@
             </select>
             <button @click="listDocuments">獲取文檔列表</button>
           </div>
-          <div class="response" :class="listDocumentsResponseClass" v-html="listDocumentsResponse"></div>
+          <!--<div class="response" :class="listDocumentsResponseClass" v-html="listDocumentsResponse"></div>-->
           <table v-if="documents.length > 0">
             <thead>
               <tr>
@@ -161,7 +161,7 @@
           </div>
           <button type="submit">發送查詢</button>
         </form>
-        <div class="response" :class="queryResponseClass" v-html="queryResponse"></div>
+        <!--<div class="response" :class="queryResponseClass" v-html="queryResponse"></div>-->
       </div>
     </div>
 
