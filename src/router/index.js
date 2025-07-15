@@ -4,8 +4,11 @@ import SynopsisEditorPage from '@/views/SynopsisEditorPage.vue'
 import LoginPage from '@/views/Login.vue'
 import RegisterPage from '@/views/Register.vue'
 import SearchUsers from '@/views/SearchUsers.vue'
+import Notifcations from '@/views/notifcations.vue'
+import Ragtest from '@/views/ragtest.vue'
 import RAGPage from '@/views/Rag.vue' // 添加 RAG 頁面導入
 import { authService } from '@/services/authService'
+
 
 
 const router = createRouter({
@@ -41,6 +44,18 @@ const router = createRouter({
       component: SearchUsers,
       meta: { requiresAuth: true },
     },
+    {
+      path: '/notifcations',
+      name: 'notifications',
+      component: Notifcations,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/ragtest',
+      name: 'ragtest',
+      component: Ragtest,
+      meta: {requiresAuth: true},
+    },
     // 添加 RAG 相關路由
     {
       path: '/rag',
@@ -73,7 +88,7 @@ const router = createRouter({
       component: () => import('@/views/NotFound.vue'),
       meta: { requiresAuth: false },
     },
-    // 添加好友頁面
+
 
   ],
 })

@@ -1,0 +1,70 @@
+
+.friend-notifications {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.notifications-list {
+  margin-top: 20px;
+}
+
+.notification-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
+
+.notification-text {
+  flex-grow: 1;
+}
+
+.add-back-button {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-back-button:hover {
+  background-color: #aa2f2f;
+}
+
+.no-notifications {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin-top: 20px;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+}
+@media (max-width: 768px) {
+  .user-search {
+    padding: 15px;
+  }
+
+  .user-item {
+    padding: 12px;
+  }
+
+  .user-item strong {
+    font-size: 14px;
+  }
+
+  .action-button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

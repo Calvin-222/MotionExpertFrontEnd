@@ -10,12 +10,19 @@
             <i class="fa fa-user"></i>
           </div>
           <div class="user-details">
-            <h3>{{  username}}</h3>
+
+            <h3>{{username}}</h3>
             <button @click="logout" class="logout-btn">Logout</button>
             <br>
             <button @click="addfriends" class="logout-btn">Add friends</button>
           </div>
-        </div>
+          <button @click="Notifcations" class="notification-btn">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+            </svg>
+            <div class="badge">{{ notifications.length}} </div>
+
+      </button>        </div>
         <!-- 主要導航 -->
         <nav class="main-nav">
           <ul>
@@ -74,7 +81,7 @@
           <div class="search-box">
             <i class="fa fa-search"></i>
             <input type="text" placeholder="Search" />
-            <span class="keyboard-shortcut">⌘⌥F</span>
+            <span class="keyboard-shortcut">ctrl+f </span>
           </div>
           <ul class="footer-nav">
             <li><i class="fa fa-trash"></i> Trash</li>
@@ -247,6 +254,7 @@ export default {
       currentPage: 0,
       cardsPerPage: 6,
       currentUser: {},
+      notifications: [],
       projects: [
         {
           title: 'Casino Fool',
@@ -372,6 +380,30 @@ export default {
     }
   },
   methods: {
+    async loadNotifications() {
+      try {
+        const token = localStorage.getItem('token');
+
+        const response = await fetch('/api/friends/notifications', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          this.notifications = data.notifications;
+        } else {
+          this.error = data.message || 'Failed to load notifications';
+        }
+      } catch (error) {
+        console.error('Error loading notifications:', error);
+        this.error = 'Network error';
+      }
+    },
     isCardVisible(index) {
       const startIndex = this.currentPage * this.cardsPerPage
       const endIndex = startIndex + this.cardsPerPage
@@ -400,9 +432,13 @@ export default {
     },
     addfriends() {
       this.$router.push('/search-users') // Redirect to the search users page
+    },
+    Notifcations() {
+      this.$router.push('/notifcations') // Redirect to the notifications page
     }
   },
   mounted() { // Combine both mounted functions
+     this.loadNotifications();
 
     // Your existing keyboard navigation support
     document.addEventListener('keydown', (e) => {
