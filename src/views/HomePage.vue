@@ -149,7 +149,7 @@
               </div>
               <div class="module-name">Project Overview</div>
             </div>
-            <router-link to="/rag" class="module" style="text-decoration: none; color:inherit;">
+            <router-link to="/ragtest" class="module" style="text-decoration: none; color:inherit;">
                 <div class="module-icon red-bg">
                   <i class="fas fa-cube"></i>
                 </div>
@@ -161,6 +161,7 @@
                 </div>
               <div class="module-name">Synopsis Editor</div>
             </router-link>
+
             <div class="module">
               <div class="module-icon red-bg">
                 <i class="fas fa-user-friends"></i>

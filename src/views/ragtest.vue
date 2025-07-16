@@ -59,7 +59,18 @@
               <tr v-for="engine in userEngines" :key="engine.id">
                 <td>{{ engine.id }}</td>
                 <td>{{ engine.name }}</td>
-                <td>{{ engine.visibility || 'private' }}</td>
+                <td>
+                    <select
+                      :value="engine.visibility"
+                      @change="updateVisibility(engine.id, $event.target.value)"
+                      :disabled="updatingVisibility[engine.id] || !engine.isOwner"
+                    >
+                      <option value="private">Private</option>
+                      <option value="public">Public</option>
+                      <option value="unlisted">Friends only</option>
+                    </select>
+                    <span v-if="updatingVisibility[engine.id]" style="margin-left: 5px;">更新中...</span>
+                  </td>
                 <td>{{ formatDate(engine.createdAt) }}</td>
                 <td>
                   <button @click="deleteEngine(engine.id)">刪除</button>
@@ -198,6 +209,8 @@ export default {
       shareTargets: {},
       sharingStates: {},
 
+      updatingVisibility: {},
+
       // Response messages and classes
       statusResponse: '',
       statusResponseClass: '',
@@ -229,11 +242,38 @@ export default {
   },
   mounted() {
     this.checkBackendStatus();
-    if (this.isAuthenticated) {
-      this.listEngines();
-    }
+    this.listEngines();
+
   },
   methods: {
+
+    async updateVisibility(engineId, newVisibility) {
+    this.updatingVisibility, engineId, true;
+
+      try {
+        const response = await fetch(`/api/rag/users/engines/${engineId}/visibility`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          },
+          body: JSON.stringify({ visibility: newVisibility })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          const engine = this.userEngines.find(e => e.id === engineId);
+          if (engine) {
+            engine.visibility = newVisibility;
+          }
+        }
+      } catch (error) {
+        console.error('Error updating visibility:', error);
+      } finally {
+        this.updatingVisibility, engineId, false;
+      }
+    },
     // 檢查後端狀態
     async checkBackendStatus() {
       try {
