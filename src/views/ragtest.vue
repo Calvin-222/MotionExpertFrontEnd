@@ -255,7 +255,7 @@ export default {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            'Authorization': 'Bearer'+ this.authToken
           },
           body: JSON.stringify({ visibility: newVisibility })
         });
