@@ -40,59 +40,67 @@
         </div>
 
         <!-- 列出用戶的 RAG Engines -->
-        <div>
-          <h3>我的 RAG Engines</h3>
-          <button @click="listEngines">刷新列表</button>
-          <div class="response" :class="listEnginesResponseClass" v-html="listEnginesResponse"></div>
-          <table v-if="userEngines.length > 0">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>名稱</th>
-                <th>可見性</th>
-                <th>建立日期</th>
-                <th>操作</th>
-                <th>分享</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="engine in userEngines" :key="engine.id">
-                <td>{{ engine.id }}</td>
-                <td>{{ engine.name }}</td>
-                <td>
-                    <select
-                      :value="engine.visibility"
-                      @change="updateVisibility(engine.id, $event.target.value)"
-                      :disabled="updatingVisibility[engine.id] || !engine.isOwner"
-                    >
-                      <option value="private">Private</option>
-                      <option value="public">Public</option>
-                      <option value="unlisted">Friends only</option>
-                    </select>
-                    <span v-if="updatingVisibility[engine.id]" style="margin-left: 5px;">更新中...</span>
-                  </td>
-                <td>{{ formatDate(engine.createdAt) }}</td>
-                <td>
-                  <button @click="deleteEngine(engine.id)">刪除</button>
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    v-model="shareTargets[engine.id]"
-                    placeholder="對方 userId"
-                    style="width: 120px;"
-                  >
-                  <button
-                    @click="shareEngine(engine.id)"
-                    :disabled="sharingStates[engine.id]"
-                  >
-                    {{ sharingStates[engine.id] ? '分享中...' : '分享' }}
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+       <div>
+  <h3>我的 RAG Engines</h3>
+  <button @click="listEngines">刷新列表</button>
+  <div class="response" :class="listEnginesResponseClass" v-html="listEnginesResponse"></div>
+  <table v-if="userEngines.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>名稱</th>
+        <th>瀏覽權限</th>
+        <th>更改瀏覽權限</th>
+        <th>建立日期</th>
+        <th>操作</th>
+        <th>分享</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="engine in userEngines" :key="engine.id">
+        <td>{{ engine.id }}</td>
+        <td>{{ engine.name }}</td>
+        <td>{{engine.visibility}}</td>
+        <td>
+  <select
+    v-model="engineVisibilities[engine.id]"
+    :disabled="updatingVisibility[engine.id] || !engine.isOwner"
+  >
+    <option value="Private">Private</option>
+    <option value="Public">Public</option>
+    <option value="Friend">Friends only</option>
+  </select>
+  <button
+    @click="updateVisibility(engine.id, engineVisibilities[engine.id])"
+    :disabled="updatingVisibility[engine.id] || !engine.isOwner"
+    style="margin-left: 5px;"
+  >
+    儲存
+  </button>
+  <span v-if="updatingVisibility[engine.id]" style="margin-left: 5px;">更新中...</span>
+</td>
+<td>{{ formatDate(engine.createdAt) }}</td>
+<td>
+          <button @click="deleteEngine(engine.id)">刪除</button>
+        </td>
+        <td>
+          <input
+            type="text"
+            v-model="shareTargets[engine.id]"
+            placeholder="對方 userId"
+            style="width: 120px;"
+          >
+          <button
+            @click="shareEngine(engine.id)"
+            :disabled="sharingStates[engine.id]"
+          >
+            {{ sharingStates[engine.id] ? '分享中...' : '分享' }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
       </div>
 
       <!-- 文件管理 -->
@@ -187,6 +195,7 @@ export default {
     return {
       // Auth state
       authToken: localStorage.getItem('token'),
+      engineVisibilities: {},
       // Forms
       engineForm: {
         name: '',
@@ -247,33 +256,33 @@ export default {
   },
   methods: {
 
-    async updateVisibility(engineId, newVisibility) {
-    this.updatingVisibility, engineId, true;
+async updateVisibility(engineId, newVisibility) {
+  this.updatingVisibility, engineId, true;
 
-      try {
-        const response = await fetch(`/api/rag/users/engines/${engineId}/visibility`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer'+ this.authToken
-          },
-          body: JSON.stringify({ visibility: newVisibility })
-        });
+  try {
+    const response = await fetch(`/api/rag/users/engines/${engineId}/visibility`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.authToken
+      },
+      body: JSON.stringify({ visibility: newVisibility })
+    });
 
-        const result = await response.json();
+    const result = await response.json();
 
-        if (result.success) {
-          const engine = this.userEngines.find(e => e.id === engineId);
-          if (engine) {
-            engine.visibility = newVisibility;
-          }
-        }
-      } catch (error) {
-        console.error('Error updating visibility:', error);
-      } finally {
-        this.updatingVisibility, engineId, false;
+    if (result.success) {
+      const engine = this.userEngines.find(e => e.id === engineId);
+      if (engine) {
+        engine.visibility = newVisibility;
       }
-    },
+    }
+  } catch (error) {
+    console.error('Error updating visibility:', error);
+  } finally {
+    this.updatingVisibility, engineId, false;
+  }
+},
     // 檢查後端狀態
     async checkBackendStatus() {
       try {
@@ -337,7 +346,7 @@ export default {
     },
 
     // 列出用戶的 RAG Engines
-    async listEngines() {
+async listEngines() {
   try {
     const response = await fetch('/api/rag/users/' + this.currentUserId + '/engines', {
       method: 'GET',
@@ -353,10 +362,13 @@ export default {
       this.userEngines = data.engines;
       this.listEnginesResponseClass = 'success';
 
-      // CORRECT - Initialize share targets and states
+      // Initialize share targets, states, and visibility values
       this.userEngines.forEach(engine => {
         this.shareTargets[engine.id] = '';
         this.sharingStates[engine.id] = false;
+        this.engineVisibilities[engine.id] = engine.visibility;
+        console.log(engine.visibility);
+        this.updatingVisibility[engine.id] = false;
       });
     } else {
       this.listEnginesResponseClass = 'error';
