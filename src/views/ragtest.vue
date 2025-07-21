@@ -41,66 +41,70 @@
 
         <!-- 列出用戶的 RAG Engines -->
        <div>
-  <h3>我的 RAG Engines</h3>
-  <button @click="listEngines">刷新列表</button>
-  <div class="response" :class="listEnginesResponseClass" v-html="listEnginesResponse"></div>
-  <table v-if="userEngines.length > 0">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>名稱</th>
-        <th>瀏覽權限</th>
-        <th>更改瀏覽權限</th>
-        <th>建立日期</th>
-        <th>操作</th>
-        <th>分享</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="engine in userEngines" :key="engine.id">
-        <td>{{ engine.id }}</td>
-        <td>{{ engine.name }}</td>
-        <td>{{engine.visibility}}</td>
-        <td>
-  <select
-    v-model="engineVisibilities[engine.id]"
-    :disabled="updatingVisibility[engine.id] || !engine.isOwner"
-  >
-    <option value="Private">Private</option>
-    <option value="Public">Public</option>
-    <option value="Friend">Friends only</option>
-  </select>
-  <button
-    @click="updateVisibility(engine.id, engineVisibilities[engine.id])"
-    :disabled="updatingVisibility[engine.id] || !engine.isOwner"
-    style="margin-left: 5px;"
-  >
-    儲存
-  </button>
-  <span v-if="updatingVisibility[engine.id]" style="margin-left: 5px;">更新中...</span>
-</td>
-<td>{{ formatDate(engine.createdAt) }}</td>
-<td>
-          <button @click="deleteEngine(engine.id)">刪除</button>
-        </td>
-        <td>
-          <input
-            type="text"
-            v-model="shareTargets[engine.id]"
-            placeholder="對方 userId"
-            style="width: 120px;"
-          >
-          <button
-            @click="shareEngine(engine.id)"
-            :disabled="sharingStates[engine.id]"
-          >
-            {{ sharingStates[engine.id] ? '分享中...' : '分享' }}
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+          <h3>我的 RAG Engines</h3>
+          <button @click="listEngines">刷新列表</button>
+          <div class="response" :class="listEnginesResponseClass" v-html="listEnginesResponse"></div>
+          <table v-if="userEngines.length > 0">
+            <thead>
+              <tr>
+
+                <th>ID</th>
+                <th>名稱</th>
+                <th>更改瀏覽權限</th>
+                <th>建立日期</th>
+                <th>操作</th>
+                <th>分享</th>
+                <th>coming from</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="engine in userEngines" :key="engine.id">
+                <td>{{ engine.id }}</td>
+                <td>{{ engine.name }}</td>
+                <td v-if ="engine.isOwner">
+                  <select
+                    v-model="engineVisibilities[engine.id]"
+                    :disabled=" !engine.isOwner"
+                  >
+                    <option value="Private">Private</option>
+                    <option value="Public">Public</option>
+                    <option value="Friend">Friends only</option>
+                  </select>
+                  <button
+                    @click="updateVisibility(engine.id, engineVisibilities[engine.id])"
+                    style="margin-left: 5px;"
+                  >
+                    儲存
+                  </button>
+                  <span v-if="updatingVisibility[engine.id]" style="margin-left: 5px;">更新中...</span>
+                </td>
+                        <td v-else> Cannot Change</td>
+                <td>{{ formatDate(engine.createdAt) }}</td>
+                <td>
+                  <button v-if="engine.isOwner" @click="deleteEngine(engine.id)">刪除</button>
+                </td>
+                <td>
+                  <input v-if="engine.isOwner"
+                    type="text"
+                    v-model="shareTargets[engine.id]"
+                    placeholder="對方 userId"
+                    style="width: 120px;"
+                  >
+                  <button v-if="engine.isOwner"
+                    @click="shareEngine(engine.id)"
+                    :disabled="sharingStates[engine.id]"
+                  >
+                    {{ sharingStates[engine.id] ? '分享中...' : '分享' }}
+                  </button>
+                </td>
+                <td>
+                  <span v-if="engine.isOwner" class="owner-badge">{{ engine.comingFrom }}</span>
+                  <span v-else class="shared-badge">{{ engine.comingFrom }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- 文件管理 -->
@@ -114,7 +118,7 @@
             <div>
               <label for="engineForUpload">選擇 RAG Engine:</label>
               <select id="engineForUpload" v-model="selectedEngineForUpload" required>
-                <option v-for="engine in userEngines" :key="engine.id" :value="engine.id">
+                <option v-for="engine in userEngines.filter(e => e.isOwner)" :key="engine.id" :value="engine.id">
                   {{ engine.name }}
                 </option>
               </select>
@@ -134,7 +138,7 @@
           <div>
             <label for="engineForDocuments">選擇 RAG Engine:</label>
             <select id="engineForDocuments" v-model="selectedEngineForDocuments">
-              <option v-for="engine in userEngines" :key="engine.id" :value="engine.id">
+              <option v-for="engine in userEngines.filter(e => e.isOwner)" :key="engine.id" :value="engine.id">
                 {{ engine.name }}
               </option>
             </select>
@@ -256,33 +260,33 @@ export default {
   },
   methods: {
 
-async updateVisibility(engineId, newVisibility) {
-  this.updatingVisibility, engineId, true;
+    async updateVisibility(engineId, newVisibility) {
+      this.updatingVisibility, engineId, true;
 
-  try {
-    const response = await fetch(`/api/rag/users/engines/${engineId}/visibility`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + this.authToken
-      },
-      body: JSON.stringify({ visibility: newVisibility })
-    });
+      try {
+        const response = await fetch(`/api/rag/users/engines/${engineId}/visibility`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.authToken
+          },
+          body: JSON.stringify({ visibility: newVisibility })
+        });
 
-    const result = await response.json();
+        const result = await response.json();
 
-    if (result.success) {
-      const engine = this.userEngines.find(e => e.id === engineId);
-      if (engine) {
-        engine.visibility = newVisibility;
+        if (result.success) {
+          const engine = this.userEngines.find(e => e.id === engineId);
+          if (engine) {
+            engine.visibility = newVisibility;
+          }
+        }
+      } catch (error) {
+        console.error('Error updating visibility:', error);
+      } finally {
+        this.updatingVisibility, engineId, false;
       }
-    }
-  } catch (error) {
-    console.error('Error updating visibility:', error);
-  } finally {
-    this.updatingVisibility, engineId, false;
-  }
-},
+    },
     // 檢查後端狀態
     async checkBackendStatus() {
       try {
@@ -414,7 +418,7 @@ async listEngines() {
         return;
       }
 
-      this(this.sharingStates, engineId, true);
+      this.sharingStates, engineId, true;
 
       try {
         const response = await fetch('/api/rag/users/engines/' + engineId + '/share', {
@@ -437,7 +441,7 @@ async listEngines() {
         alert('分享錯誤: ' + error.message);
       }
 
-      this(this.sharingStates, engineId, false);
+      this.sharingStates, engineId, false;
     },
 
     // 上傳文件函數
