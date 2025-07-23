@@ -17,7 +17,13 @@
       <div class="users-list">
         <div v-for="user in users" :key="user.username" class="user-item">
           <strong>{{ user.username }}</strong>
-          <button @click="AddFriend(user.username)" class="action-button">Add Friend</button>
+          <button
+            @click="!user.isFriend && AddFriend(user.username)"
+            class="action-button"
+            :disabled="user.isFriend"
+          >
+            {{ user.isFriend ? 'Already Friend' : 'Add Friend' }}
+          </button>
         </div>
       </div>
     </div>
@@ -101,6 +107,13 @@ export default {
       const data = await response.json();
 
       if (data.success) {
+        // 更新搜索结果中的好友状态
+        this.users = this.users.map(user => {
+          if (user.username === username) {
+            return { ...user, isFriend: true };
+          }
+          return user;
+        });
         alert(`Added ${username} as friend!`);
       } else {
         alert(`Error: ${data.message}`);
