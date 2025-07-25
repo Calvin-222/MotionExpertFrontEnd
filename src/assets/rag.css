@@ -1,4 +1,16 @@
 /* 保持原有樣式，並添加以下新樣式 */
+.rag-button {
+  background: none;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.rag-button:hover {
+  opacity: 0.8;
+}
 
 .global-mode {
   color: #2ecc71 !important;
