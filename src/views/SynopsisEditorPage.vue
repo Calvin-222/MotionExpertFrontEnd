@@ -102,8 +102,17 @@
           </div>
         </div>
 
+        <!-- RAG Engine 選擇 -->
+        <div class="input-group">
+          <label for="engineSelect">選擇 RAG Engine：</label>
+          <select id="engineSelect" v-model="selectedEngineId">
+            <option v-for="engine in userEngines" :key="engine.id" :value="engine.id">
+              {{ engine.displayName || engine.name || engine.ragName }}
+            </option>
+          </select>
+        </div>
         <button @click="submitSynopsis" class="submit-btn synopsis-action-btn main-generate-btn">
-          <i class="fas fa-cogs"></i> Generate Synopsis String
+          <i class="fas fa-cogs"></i> 送出給 AI
         </button>
       </div>
 
@@ -153,6 +162,8 @@ export default {
       generatedSynopsisString: '',
       aiResponse: 'AI response will appear here once you generate the synopsis.',
       followUpPrompt: '',
+      selectedEngineId: '',
+      userEngines: [],
     };
   },
   computed: {
@@ -170,6 +181,9 @@ export default {
 
       return marked(this.aiResponse);
     }
+  },
+  mounted() {
+    this.loadUserEngines();
   },
   methods: {
     // 提交劇情概要，合併輸入並呼叫後端 API
@@ -206,19 +220,25 @@ export default {
       parts.push(`Teasing Dialogue: ${this.formData.teasingDialogue || 'N/A'}`);
 
       this.generatedSynopsisString = parts.join('\n');
-
       this.aiResponse = `Sending synopsis to backend...\n\n--- Generated String Sent to Backend ---\n${this.generatedSynopsisString}`;
 
-        try {
+      if (!this.selectedEngineId) {
+        this.aiResponse = '請先選擇 RAG Engine';
+        return;
+      }
+
+      try {
         const token = localStorage.getItem('token');
-        // 使用 Vite 代理，所以直接呼叫 /api/synopsis
-        const response = await fetch('/api/synopsis', {
+        const response = await fetch('/api/msw-with-file/askai', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify({ synopsisString: this.generatedSynopsisString }),
+          body: JSON.stringify({
+            synopsisString: this.generatedSynopsisString,
+            engineId: this.selectedEngineId,
+          }),
         });
 
         if (!response.ok) {
@@ -232,6 +252,36 @@ export default {
       } catch (error) {
         console.error('Error submitting synopsis to backend:', error);
         this.aiResponse = `Error submitting synopsis: ${error.message}. Check console for details.`;
+      }
+    },
+    // 載入用戶 RAG engine 列表
+    async loadUserEngines() {
+      const token = localStorage.getItem('token');
+      // 改用 authService.getUser() 取得 userId
+      let userId = null;
+      try {
+        // 動態載入 authService
+        const authService = (await import('@/services/authService')).authService;
+        const user = authService.getUser();
+        userId = user?.userid || user?.userId || null;
+      } catch (e) {
+        userId = localStorage.getItem('userId');
+      }
+      console.log('userId:', userId, 'token:', token);
+      if (!userId) return;
+      const response = await fetch(`/api/rag/users/${userId}/engines`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log('engine list response:', data);
+      if (data.success) {
+        this.userEngines = data.engines || [];
+        if (this.userEngines.length > 0) {
+          this.selectedEngineId = this.userEngines[0].id;
+        }
       }
     },
     // 發送後續指令給 AI (此部分可以類似地修改為呼叫後端)
@@ -253,7 +303,7 @@ export default {
             'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({
-            followUpString: this.followUpPrompt // 修改此處以匹配後端期望
+            followUpString: this.followUpPrompt // 修改此处以匹配后端期望
             // 可以選擇性地傳送其他上下文，但後端目前只使用 followUpString
             // previousSynopsis: currentSynopsisContext,
             // previousAIResponse: previousAIResponse,
@@ -272,7 +322,10 @@ export default {
         console.error('Error sending follow-up to backend:', error);
         this.aiResponse = `${this.aiResponse}\n\nError processing follow-up: ${error.message}.`;
       }
-    }
+    },
+    handleFileChange(event) {
+      this.file = event.target.files[0] || null;
+    },
   }
 }
 </script>
