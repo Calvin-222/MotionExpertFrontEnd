@@ -104,7 +104,7 @@
 
         <!-- RAG Engine 選擇 -->
         <div class="input-group">
-          <label for="engineSelect">選擇 RAG Engine：</label>
+          <label for="engineSelect">Choose RAG Engine：</label>
           <select id="engineSelect" v-model="selectedEngineId">
             <option v-for="engine in userEngines" :key="engine.id" :value="engine.id">
               {{ engine.displayName || engine.name || engine.ragName }}
@@ -112,7 +112,7 @@
           </select>
         </div>
         <button @click="submitSynopsis" class="submit-btn synopsis-action-btn main-generate-btn">
-          <i class="fas fa-cogs"></i> 送出給 AI
+          <i class="fas fa-cogs"></i> Generate
         </button>
       </div>
 
@@ -264,7 +264,9 @@ export default {
         const authService = (await import('@/services/authService')).authService;
         const user = authService.getUser();
         userId = user?.userid || user?.userId || null;
-      } catch (e) {
+
+      // eslint-disable-next-line no-unused-vars
+      } catch (error) {
         userId = localStorage.getItem('userId');
       }
       console.log('userId:', userId, 'token:', token);

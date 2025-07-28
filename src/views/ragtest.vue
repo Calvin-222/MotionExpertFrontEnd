@@ -3,11 +3,7 @@
     <h1>RAG 系統測試界面</h1>
 
     <!-- 連接狀態檢查 -->
-    <div class="section">
-      <h2>系統狀態檢查</h2>
-      <button @click="checkBackendStatus">檢查後端連接</button>
-      <div class="response" :class="statusResponseClass" v-html="statusResponse"></div>
-    </div>
+
 
     <!-- 登錄後顯示的部分 -->
 
@@ -225,8 +221,7 @@ export default {
       updatingVisibility: {},
 
       // Response messages and classes
-      statusResponse: '',
-      statusResponseClass: '',
+
       loginResponse: '',
       loginResponseClass: '',
       registerResponse: '',
@@ -254,7 +249,7 @@ export default {
     }
   },
   mounted() {
-    this.checkBackendStatus();
+
     this.listEngines();
 
   },
@@ -288,28 +283,6 @@ export default {
       }
     },
     // 檢查後端狀態
-    async checkBackendStatus() {
-      try {
-        this.statusResponse = '檢查中...';
-        this.statusResponseClass = '';
-
-        const response = await fetch('/', {
-          method: 'GET',
-        });
-
-        if (response.ok) {
-          this.statusResponse = '✅ 後端連接正常 (狀態碼: ' + response.status + ')';
-          this.statusResponseClass = 'success';
-        } else {
-          this.statusResponse = '❌ 後端狀態異常 (狀態碼: ' + response.status + ')';
-          this.statusResponseClass = 'error';
-        }
-      } catch (error) {
-        this.statusResponse = '❌ 無法連接後端: ' + error.message;
-        this.statusResponseClass = 'error';
-      }
-    },
-
 
     // 登出功能
     logout() {
@@ -340,6 +313,7 @@ export default {
           this.engineForm.name = '';
           this.engineForm.description = '';
           this.listEngines();
+          alert('RAG Engine 已成功創建');
         } else {
           this.createEngineResponseClass = 'error';
         }
