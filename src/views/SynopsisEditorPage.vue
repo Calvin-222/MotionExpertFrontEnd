@@ -209,15 +209,11 @@ export default {
       }
 
       parts.push("\nAdditional Details:");
-      parts.push(`  Logline: ${this.formData.additionalDetails.logline || 'N/A'}`);
-      parts.push(`  Theme: ${this.formData.additionalDetails.theme || 'N/A'}`);
-      parts.push(`  Target Audience: ${this.formData.additionalDetails.targetAudience || 'N/A'}`);
-      parts.push(`  Comparable Titles: ${this.formData.additionalDetails.comparableTitles || 'N/A'}`);
-
-      parts.push("\nTeasing Elements:");
-      parts.push(`Period of Scene: ${this.formData.periodOfScene || 'N/A'}`);
-      parts.push(`Teasing Action: ${this.formData.teasingAction || 'N/A'}`);
-      parts.push(`Teasing Dialogue: ${this.formData.teasingDialogue || 'N/A'}`);
+      parts.push(`  Theme and Message: ${this.formData.themeAndMessage || 'N/A'}`);
+      parts.push(`  One-liner: ${this.formData.oneLiner || 'N/A'}`);
+      parts.push(`  Period of Scene: ${this.formData.periodOfScene || 'N/A'}`);
+      parts.push(`  Teasing Action: ${this.formData.teasingAction || 'N/A'}`);
+      parts.push(`  Teasing Dialogue: ${this.formData.teasingDialogue || 'N/A'}`);
 
       this.generatedSynopsisString = parts.join('\n');
       this.aiResponse = `Sending synopsis to backend...\n\n--- Generated String Sent to Backend ---\n${this.generatedSynopsisString}`;
