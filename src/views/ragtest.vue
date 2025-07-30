@@ -83,7 +83,7 @@
                   <input v-if="engine.isOwner"
                     type="text"
                     v-model="shareTargets[engine.id]"
-                    placeholder="對方 userId"
+                    placeholder="Username"
                     style="width: 120px;"
                   >
                   <button v-if="engine.isOwner"
@@ -388,9 +388,9 @@ async listEngines() {
 
     // 分享 Engine
     async shareEngine(engineId) {
-      const targetUserId = this.shareTargets[engineId]?.trim();
-      if (!targetUserId) {
-        alert('請輸入對方 userId');
+      const targetUsername = this.shareTargets[engineId]?.trim();
+      if (!targetUsername) {
+        alert('請輸入目標用戶名');
         return;
       }
 
@@ -403,15 +403,17 @@ async listEngines() {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + this.authToken,
           },
-          body: JSON.stringify({ targetUserId: targetUserId }),
+          body: JSON.stringify({ targetUsername: targetUsername }),
         });
 
         const data = await response.json();
 
         if (data.success) {
-          alert('分享成功！');
+          alert(`成功分享給用戶 ${targetUsername}！`);
+          // 清空輸入框
+          this.shareTargets[engineId] = '';
         } else {
-          alert('分享失敗: ' + data.error);
+          alert('分享失敗: ' + (data.error || data.message || '未知錯誤'));
         }
       } catch (error) {
         alert('分享錯誤: ' + error.message);
