@@ -609,7 +609,11 @@ async listEngines() {
 
     // Utility method to format dates
     formatDate(dateString) {
-      return new Date(dateString).toLocaleString();
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      // Add 8 hours (8 * 60 * 60 * 1000 milliseconds)
+      const utcPlus8Date = new Date(date.getTime() + (8 * 60 * 60 * 1000));
+      return utcPlus8Date.toLocaleString();
     }
   }
 }
