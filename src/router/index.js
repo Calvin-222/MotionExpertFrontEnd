@@ -6,7 +6,6 @@ import RegisterPage from '@/views/Register.vue'
 import SearchUsers from '@/views/SearchUsers.vue'
 import Notifcations from '@/views/notifcations.vue'
 import Ragtest from '@/views/ragtest.vue'
-import RAGPage from '@/views/Rag.vue' // 添加 RAG 頁面導入
 import { authService } from '@/services/authService'
 
 
@@ -57,15 +56,7 @@ const router = createRouter({
       meta: {requiresAuth: true},
     },
     // 添加 RAG 相關路由
-    {
-      path: '/rag',
-      name: 'rag',
-      component: RAGPage,
-      meta: {
-        requiresAuth: true,
-        title: 'AI 知識庫',
-      },
-    },
+
     {
       path: '/ai-assistant',
       redirect: '/rag', // 別名路由

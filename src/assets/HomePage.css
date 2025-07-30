@@ -262,13 +262,16 @@ header h1 {
 }
 
 .feature-modules {
-    margin: 0 20px 25px; /* 稍微減少底部間距 */
+    margin: 0 20px 25px;
+    padding: 0; /* Remove any padding that might interfere */
 }
 
 .module-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* Change from space-between to flex-start */
     margin-bottom: 20px;
+    gap: 18px; /* Add consistent gap between modules */
+    flex-wrap: wrap; /* Allow wrapping if needed */
 }
 
 .module {
@@ -276,37 +279,79 @@ header h1 {
     width: calc(16.666% - 15px);
     cursor: pointer;
     transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center align the entire module */
 }
 
 .module:hover {
     transform: translateY(-5px);
 }
+.module-icon i::before {
+    margin: 0 !important;
+    padding: 0 !important;
+    vertical-align: baseline !important;
+}
+/* Fix any FontAwesome conflicts with base.css */
+.fa, .fas, .far, .fal, .fad, .fab {
+    font-family: "Font Awesome 5 Free", "Font Awesome 6 Free", "Font Awesome 5 Pro", "Font Awesome 6 Pro" !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    text-rendering: auto !important;
+    line-height: 1 !important;
+}
 
+/* Specific fixes for solid icons */
+.fas {
+    font-weight: 900 !important;
+}
 .module-icon {
-    width: 90px; /* 調整寬度，從100px改為90px */
-    height: 90px; /* 調整高度，從100px改為90px */
+    width: 90px;
+    height: 90px;
     border-radius: 8px;
-    margin: 0 auto 10px; /* 增加底部間距 */
+    margin: 0 auto 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    /* Remove any potential interference */
+    overflow: visible;
 }
 
 .red-bg {
-    background-color: var(--primary-red); /* 確保使用紅色背景 */
+    background-color: var(--primary-red);
 }
 
 .module-icon i {
-    font-size: 36px; /* 調整圖標大小，從40px改為36px */
-    color: white;
+    font-size: 36px !important;
+    color: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    /* Ensure FontAwesome renders properly */
+    font-family: "Font Awesome 5 Free", "Font Awesome 6 Free" !important;
+    font-weight: 900 !important; /* For solid icons */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Reset any base.css interference */
+    text-align: center !important;
+    vertical-align: baseline !important;
+    position: static !important;
 }
 
 .module-name {
-    font-size: 14px; /* 調整字體大小，從16px改為14px */
+    font-size: 14px;
     color: var(--text-dark);
-    margin-top: 5px; /* 減少上邊距 */
-    line-height: 1.2; /* 添加行高以處理多行文字 */
+    margin-top: 5px;
+    line-height: 1.2;
+    text-align: center;
+    width: 100%;
+    /* Ensure text doesn't affect icon positioning */
+    display: block;
 }
 
 /* 專案選項卡 */

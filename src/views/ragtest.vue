@@ -1,191 +1,200 @@
 <template>
   <div class="rag-container">
-    <h1>RAG 系統測試界面</h1>
+    <h1><i class="fas fa-cube"></i>RAG System</h1>
 
-    <!-- 連接狀態檢查 -->
-
-
-    <!-- 登錄後顯示的部分 -->
-
-      <!-- 用戶信息 -->
-      <div class="section">
-        <h2>用戶信息</h2>
-        <div>當前用戶 ID: {{ currentUserId }}</div>
-        <button @click="logout">登出</button>
-      </div>
-
-      <!-- RAG Engine 管理 -->
-      <div class="section">
-        <h2>2. RAG Engine 管理</h2>
-
-        <!-- 創建 RAG Engine -->
-        <div>
-          <h3>創建新 RAG Engine</h3>
+    <!-- RAG Engine Management -->
+    <div class="section">
+      <h2><i class="fas fa-cog"></i>RAG Engine Management</h2>
+      <div class="section-content">
+        <!-- Create RAG Engine -->
+        <div class="subsection">
+          <h3>Create New RAG Engine</h3>
           <form @submit.prevent="createEngine">
-            <div>
-              <label for="engineName">引擎名稱:</label>
+            <div class="form-group">
+              <label for="engineName">Engine Name:</label>
               <input type="text" id="engineName" v-model="engineForm.name" required>
             </div>
-            <div>
-              <label for="engineDescription">描述 (選填):</label>
+            <div class="form-group">
+              <label for="engineDescription">Description (Optional):</label>
               <input type="text" id="engineDescription" v-model="engineForm.description">
             </div>
-            <button type="submit">創建 RAG Engine</button>
+            <button type="submit" class="btn">Create RAG Engine</button>
           </form>
-          <div class="response" :class="createEngineResponseClass" v-html="createEngineResponse"></div>
         </div>
 
-        <!-- 列出用戶的 RAG Engines -->
-       <div>
-          <h3>我的 RAG Engines</h3>
-          <button @click="listEngines">刷新列表</button>
-          <div class="response" :class="listEnginesResponseClass" v-html="listEnginesResponse"></div>
-          <table v-if="userEngines.length > 0">
-            <thead>
-              <tr>
+        <!-- List User's RAG Engines -->
+        <div class="subsection">
+          <h3>My RAG Engines</h3>
+          <button @click="listEngines" class="btn btn-secondary">Refresh List</button>
 
-                <th>ID</th>
-                <th>名稱</th>
-                <th>更改瀏覽權限</th>
-                <th>建立日期</th>
-                <th>操作</th>
-                <th>分享</th>
-                <th>coming from</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="engine in userEngines" :key="engine.id">
-                <td>{{ engine.id }}</td>
-                <td>{{ engine.name }}</td>
-                <td v-if ="engine.isOwner">
-                  <select
-                    v-model="engineVisibilities[engine.id]"
-                    :disabled=" !engine.isOwner"
-                  >
-                    <option value="Private">Private</option>
-                    <option value="Public">Public</option>
-                    <option value="Friend">Friends only</option>
-                  </select>
-                  <button
-                    @click="updateVisibility(engine.id, engineVisibilities[engine.id])"
-                    style="margin-left: 5px;"
-                  >
-                    儲存
-                  </button>
-                  <span v-if="updatingVisibility[engine.id]" style="margin-left: 5px;">更新中...</span>
-                </td>
-                        <td v-else> Cannot Change</td>
-                <td>{{ formatDate(engine.createdAt) }}</td>
-                <td>
-                  <button v-if="engine.isOwner" @click="deleteEngine(engine.id)">刪除</button>
-                </td>
-                <td>
-                  <input v-if="engine.isOwner"
-                    type="text"
-                    v-model="shareTargets[engine.id]"
-                    placeholder="Username"
-                    style="width: 120px;"
-                  >
-                  <button v-if="engine.isOwner"
-                    @click="shareEngine(engine.id)"
-                    :disabled="sharingStates[engine.id]"
-                  >
-                    {{ sharingStates[engine.id] ? '分享中...' : '分享' }}
-                  </button>
-                </td>
-                <td>
-                  <span v-if="engine.isOwner" class="owner-badge">{{ engine.comingFrom }}</span>
-                  <span v-else class="shared-badge">{{ engine.comingFrom }}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-container" v-if="userEngines.length > 0">
+            <table>
+              <thead>
+                <tr>
+                  <th>RAG Name</th>
+                  <th>Change Visibility</th>
+                  <th>Created at</th>
+                  <th>Originated From</th>
+                  <th>Direct Sharing</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="engine in userEngines" :key="engine.id">
+                  <td><strong>{{ engine.name }}</strong></td>
+                  <td v-if="engine.isOwner">
+                    <div class="visibility-controls">
+                      <select
+                        v-model="engineVisibilities[engine.id]"
+                        :disabled="!engine.isOwner"
+                      >
+                        <option value="Private">Private</option>
+                        <option value="Public">Public</option>
+                        <option value="Friend">Friends only</option>
+                      </select>
+                      <button
+                        @click="updateVisibility(engine.id, engineVisibilities[engine.id])"
+                        class="btn btn-small"
+                      >
+                        Save
+                      </button>
+                      <span v-if="updatingVisibility[engine.id]" class="status-text">Updating...</span>
+                    </div>
+                  </td>
+                  <td v-else>
+                    <span class="status-text">Cannot Change</span>
+                  </td>
+                  <td>{{ formatDate(engine.createdAt) }}</td>
+                  <td>
+                    <span v-if="engine.isOwner" class="badge owner-badge">{{ engine.comingFrom }}</span>
+                    <span v-else class="badge shared-badge">{{ engine.comingFrom }}</span>
+                  </td>
+                  <td>
+                    <div class="sharing-controls" v-if="engine.isOwner">
+                      <input
+                        type="text"
+                        v-model="shareTargets[engine.id]"
+                        placeholder="Username"
+                      >
+                      <button
+                        @click="shareEngine(engine.id)"
+                        :disabled="sharingStates[engine.id]"
+                        class="btn btn-small"
+                      >
+                        {{ sharingStates[engine.id] ? 'Sharing...' : 'Share' }}
+                      </button>
+                    </div>
+                    <span v-else>-</span>
+                  </td>
+                  <td>
+                    <button v-if="engine.isOwner" @click="deleteEngine(engine.id)" class="btn btn-danger btn-small">
+                      Delete
+                    </button>
+                    <span v-else>-</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- 文件管理 -->
-      <div class="section">
-        <h2>3. 文件管理</h2>
-
-        <!-- 上傳文件 -->
-        <div>
-          <h3>上傳文件到 RAG Engine</h3>
+    <!-- Document Management -->
+    <div class="section">
+      <h2><i class="fas fa-file-alt"></i>Document Management</h2>
+      <div class="section-content">
+        <!-- Upload Files -->
+        <div class="subsection">
+          <h3>Upload Files to RAG Engine</h3>
           <form @submit.prevent="uploadFile">
-            <div>
-              <label for="engineForUpload">選擇 RAG Engine:</label>
+            <div class="form-group">
+              <label for="engineForUpload">Select RAG Engine:</label>
               <select id="engineForUpload" v-model="selectedEngineForUpload" required>
+                <option value="">Choose an engine...</option>
                 <option v-for="engine in userEngines.filter(e => e.isOwner)" :key="engine.id" :value="engine.id">
                   {{ engine.name }}
                 </option>
               </select>
             </div>
-            <div>
-              <label for="fileToUpload">選擇文件 (支援多個文件):</label>
-              <input type="file" id="fileToUpload" ref="fileInput" multiple>
+            <div class="form-group">
+              <label>Select Files (Multiple files supported):</label>
+              <div class="custom-file-input">
+                <input type="file" id="fileToUpload" ref="fileInput" @change="handleFileSelection" multiple style="display: none;">
+                <button type="button" @click="$refs.fileInput.click()" class="btn btn-file">Choose Files</button>
+                <span>{{ selectedFilesText }}</span>
+              </div>
             </div>
-            <button type="submit">上傳文件</button>
+            <button type="submit" class="btn">Upload Files</button>
           </form>
-          <div class="response" :class="uploadFileResponseClass" v-html="uploadFileResponse"></div>
         </div>
 
-        <!-- 列出引擎的文件 -->
-        <div>
-          <h3>查看 RAG Engine 中的文件</h3>
-          <div>
-            <label for="engineForDocuments">選擇 RAG Engine:</label>
-            <select id="engineForDocuments" v-model="selectedEngineForDocuments">
-              <option v-for="engine in userEngines.filter(e => e.isOwner)" :key="engine.id" :value="engine.id">
-                {{ engine.name }}
-              </option>
-            </select>
-            <button @click="listDocuments">獲取文檔列表</button>
+        <!-- List Engine Documents -->
+        <div class="subsection">
+          <h3>View Files in RAG Engine</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="engineForDocuments">Select RAG Engine:</label>
+              <select id="engineForDocuments" v-model="selectedEngineForDocuments">
+                <option value="">Choose an engine...</option>
+                <option v-for="engine in userEngines.filter(e => e.isOwner)" :key="engine.id" :value="engine.id">
+                  {{ engine.name }}
+                </option>
+              </select>
+            </div>
+            <button @click="listDocuments" class="btn btn-secondary">Get Document List</button>
           </div>
-          <div class="response" :class="listDocumentsResponseClass" v-html="listDocumentsResponse"></div>
-          <table v-if="documents.length > 0">
-            <thead>
-              <tr>
-                <th>文件ID</th>
-                <th>原始文件名</th>
-                <th>上傳時間</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="doc in documents" :key="doc.fileId || doc.id">
-                <td>{{ doc.fileId || doc.id || 'N/A' }}</td>
-                <td>{{ doc.originalFileName || doc.displayName || doc.filename || doc.name || 'Unknown' }}</td>
-                <td>{{ formatDate(doc.created_at) || 'N/A' }}</td>
-                <td>
-                  <button @click="deleteDocument(doc.fileId || doc.id)">刪除</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+          <div class="table-container" v-if="documents.length > 0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Original Filename</th>
+                  <th>Upload Time</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="doc in documents" :key="doc.fileId || doc.id">
+                  <td>{{ doc.originalFileName || doc.displayName || doc.filename || doc.name || 'Unknown' }}</td>
+                  <td>{{ formatDate(doc.created_at) || 'N/A' }}</td>
+                  <td>
+                    <button @click="deleteDocument(doc.fileId || doc.id)" class="btn btn-danger btn-small">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- 查詢功能 -->
-      <div class="section">
-        <h2>4. RAG 查詢</h2>
+    <!-- Query Function -->
+    <div class="section">
+      <h2><i class="fas fa-search"></i>RAG Query</h2>
+      <div class="section-content">
         <form @submit.prevent="queryEngine">
-          <div>
-            <label for="engineForQuery">選擇 RAG Engine:</label>
+          <div class="form-group">
+            <label for="engineForQuery">Select RAG Engine:</label>
             <select id="engineForQuery" v-model="selectedEngineForQuery">
+              <option value="">Choose an engine...</option>
               <option v-for="engine in userEngines" :key="engine.id" :value="engine.id">
                 {{ engine.name }}
               </option>
             </select>
           </div>
-          <div>
-            <label for="question">提問:</label>
-            <textarea id="question" v-model="queryForm.question" rows="4" required></textarea>
+          <div class="form-group">
+            <label for="question">Question:</label>
+            <textarea id="question" v-model="queryForm.question" rows="4" placeholder="Enter your question here..." required></textarea>
           </div>
-          <button type="submit">發送查詢</button>
+          <button type="submit" class="btn">Send Query</button>
         </form>
-        <div class="response" :class="queryResponseClass" v-html="queryResponse"></div>
+        <div class="response" :class="queryResponseClass" v-html="queryResponse" v-if="queryResponse"></div>
       </div>
     </div>
-
+  </div>
 </template>
 
 <script>
@@ -216,6 +225,9 @@ export default {
       selectedEngineForDocuments: '',
       selectedEngineForQuery: '',
 
+      // File selection
+      selectedFiles: [],
+
       // Share functionality
       shareTargets: {},
       sharingStates: {},
@@ -223,7 +235,6 @@ export default {
       updatingVisibility: {},
 
       // Response messages and classes
-
       loginResponse: '',
       loginResponseClass: '',
       registerResponse: '',
@@ -241,24 +252,35 @@ export default {
     }
   },
   computed: {
+    selectedFilesText() {
+      if (!this.selectedFiles || this.selectedFiles.length === 0) {
+        return 'No files selected';
+      }
+      if (this.selectedFiles.length === 1) {
+        return this.selectedFiles[0].name;
+      }
+      return `${this.selectedFiles.length} files selected: ${this.selectedFiles.map(f => f.name).join(', ')}`;
+    },
     username() {
-    const user = authService.getUser()
-    return user?.username || 'Loading...'
-  },
+      const user = authService.getUser()
+      return user?.username || 'Loading...'
+    },
     currentUserId(){
       const user = authService.getUser()
       return user?.userid || 'Loading...'
     }
   },
   mounted() {
-
     this.listEngines();
-
   },
   methods: {
+    // Handle file selection
+    handleFileSelection(event) {
+      this.selectedFiles = Array.from(event.target.files);
+    },
 
     async updateVisibility(engineId, newVisibility) {
-      this.updatingVisibility, engineId, true;
+      this.updatingVisibility[engineId] = true;
 
       try {
         const response = await fetch(`/api/rag/users/engines/${engineId}/visibility`, {
@@ -281,18 +303,17 @@ export default {
       } catch (error) {
         console.error('Error updating visibility:', error);
       } finally {
-        this.updatingVisibility, engineId, false;
+        this.updatingVisibility[engineId] = false;
       }
     },
-    // 檢查後端狀態
 
-    // 登出功能
+    // Logout functionality
     logout() {
       authService.logout()
       this.$router.push('/login')
     },
 
-    // 創建 RAG Engine
+    // Create RAG Engine
     async createEngine() {
       try {
         const response = await fetch('/api/rag/users/engines', {
@@ -315,7 +336,7 @@ export default {
           this.engineForm.name = '';
           this.engineForm.description = '';
           this.listEngines();
-          alert('RAG Engine 已成功創建');
+          alert('RAG Engine created successfully');
         } else {
           this.createEngineResponseClass = 'error';
         }
@@ -325,43 +346,43 @@ export default {
       }
     },
 
-    // 列出用戶的 RAG Engines
-async listEngines() {
-  try {
-    const response = await fetch('/api/rag/users/' + this.currentUserId + '/engines', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + this.authToken,
-      },
-    });
+    // List user's RAG Engines
+    async listEngines() {
+      try {
+        const response = await fetch('/api/rag/users/' + this.currentUserId + '/engines', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + this.authToken,
+          },
+        });
 
-    const data = await response.json();
-    this.listEnginesResponse = JSON.stringify(data, null, 2);
+        const data = await response.json();
+        this.listEnginesResponse = JSON.stringify(data, null, 2);
 
-    if (data.success) {
-      this.userEngines = data.engines;
-      this.listEnginesResponseClass = 'success';
+        if (data.success) {
+          this.userEngines = data.engines;
+          this.listEnginesResponseClass = 'success';
 
-      // Initialize share targets, states, and visibility values
-      this.userEngines.forEach(engine => {
-        this.shareTargets[engine.id] = '';
-        this.sharingStates[engine.id] = false;
-        this.engineVisibilities[engine.id] = engine.visibility;
-        console.log(engine.visibility);
-        this.updatingVisibility[engine.id] = false;
-      });
-    } else {
-      this.listEnginesResponseClass = 'error';
-    }
-  } catch (error) {
-    this.listEnginesResponse = 'Error: ' + error.message;
-    this.listEnginesResponseClass = 'error';
-  }
-},
+          // Initialize share targets, states, and visibility values
+          this.userEngines.forEach(engine => {
+            this.shareTargets[engine.id] = '';
+            this.sharingStates[engine.id] = false;
+            this.engineVisibilities[engine.id] = engine.visibility;
+            console.log(engine.visibility);
+            this.updatingVisibility[engine.id] = false;
+          });
+        } else {
+          this.listEnginesResponseClass = 'error';
+        }
+      } catch (error) {
+        this.listEnginesResponse = 'Error: ' + error.message;
+        this.listEnginesResponseClass = 'error';
+      }
+    },
 
-    // 刪除 RAG Engine
+    // Delete RAG Engine
     async deleteEngine(engineId) {
-      if (!confirm('確定要刪除 ID 為 ' + engineId + ' 的 RAG Engine 嗎？')) {
+      if (!confirm('Are you sure you want to delete the RAG Engine with ID ' + engineId + '?')) {
         return;
       }
 
@@ -376,25 +397,25 @@ async listEngines() {
         const data = await response.json();
 
         if (data.success) {
-          alert('RAG Engine 已成功刪除');
+          alert('RAG Engine deleted successfully');
           this.listEngines();
         } else {
-          alert('刪除失敗: ' + data.error);
+          alert('Delete failed: ' + data.error);
         }
       } catch (error) {
         alert('Error: ' + error.message);
       }
     },
 
-    // 分享 Engine
+    // Share Engine
     async shareEngine(engineId) {
       const targetUsername = this.shareTargets[engineId]?.trim();
       if (!targetUsername) {
-        alert('請輸入目標用戶名');
+        alert('Please enter target username');
         return;
       }
 
-      this.sharingStates, engineId, true;
+      this.sharingStates[engineId] = true;
 
       try {
         const response = await fetch('/api/rag/users/engines/' + engineId + '/share', {
@@ -409,41 +430,40 @@ async listEngines() {
         const data = await response.json();
 
         if (data.success) {
-          alert(`成功分享給用戶 ${targetUsername}！`);
-          // 清空輸入框
+          alert(`Successfully shared with user ${targetUsername}!`);
+          // Clear input field
           this.shareTargets[engineId] = '';
         } else {
-          alert('分享失敗: ' + (data.error || data.message || '未知錯誤'));
+          alert('Share failed: ' + (data.error || data.message || 'Unknown error'));
         }
       } catch (error) {
-        alert('分享錯誤: ' + error.message);
+        alert('Share error: ' + error.message);
       }
 
-      this.sharingStates, engineId, false;
+      this.sharingStates[engineId] = false;
     },
 
-    // 上傳文件函數
+    // Upload file function
     async uploadFile() {
       if (!this.selectedEngineForUpload) {
-        alert('請選擇一個 RAG Engine');
+        alert('Please select a RAG Engine');
         return;
       }
 
-      const files = this.$refs.fileInput.files;
-      if (files.length === 0) {
-        alert('請選擇至少一個文件');
+      if (this.selectedFiles.length === 0) {
+        alert('Please select at least one file');
         return;
       }
 
-      const totalFiles = files.length;
+      const totalFiles = this.selectedFiles.length;
       let successCount = 0;
       let failCount = 0;
 
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+      for (let i = 0; i < this.selectedFiles.length; i++) {
+        const file = this.selectedFiles[i];
 
         try {
-          this.uploadFileResponse = '上傳文件 ' + (i + 1) + '/' + totalFiles + ': ' + file.name + '，請稍候...';
+          this.uploadFileResponse = 'Uploading file ' + (i + 1) + '/' + totalFiles + ': ' + file.name + ', please wait...';
 
           const formData = new FormData();
           formData.append('file', file);
@@ -461,28 +481,30 @@ async listEngines() {
 
           if (data.success) {
             successCount++;
-            this.uploadFileResponse += '\n✅ ' + file.name + ' 上傳成功';
+            this.uploadFileResponse += '\n✅ ' + file.name + ' uploaded successfully';
             this.uploadFileResponseClass = 'success';
           } else {
             failCount++;
-            this.uploadFileResponse += '\n❌ ' + file.name + ' 上傳失敗: ' + data.error;
+            this.uploadFileResponse += '\n❌ ' + file.name + ' upload failed: ' + data.error;
             this.uploadFileResponseClass = 'error';
           }
         } catch (error) {
           failCount++;
-          this.uploadFileResponse += '\n❌ ' + file.name + ' 上傳錯誤: ' + error.message;
+          this.uploadFileResponse += '\n❌ ' + file.name + ' upload error: ' + error.message;
           this.uploadFileResponseClass = 'error';
         }
       }
 
+      // Clear the file selection
+      this.selectedFiles = [];
       this.$refs.fileInput.value = '';
-      this.uploadFileResponse += '\n\n📊 上傳完成！總共處理 ' + totalFiles + ' 個文件（成功：' + successCount + '，失敗：' + failCount + '）';
+      this.uploadFileResponse += '\n\n📊 Upload complete! Processed ' + totalFiles + ' files (Success: ' + successCount + ', Failed: ' + failCount + ')';
     },
 
-    // 列出文件
+    // List documents
     async listDocuments() {
       if (!this.selectedEngineForDocuments) {
-        alert('請選擇一個 RAG Engine');
+        alert('Please select a RAG Engine');
         return;
       }
 
@@ -532,9 +554,9 @@ async listEngines() {
       }
     },
 
-    // 刪除文件
+    // Delete document
     async deleteDocument(fileId) {
-      if (!confirm('確定要刪除 ID 為 ' + fileId + ' 的文件嗎？')) {
+      if (!confirm('Are you sure you want to delete the file with ID ' + fileId + '?')) {
         return;
       }
 
@@ -549,30 +571,30 @@ async listEngines() {
         const data = await response.json();
 
         if (data.success) {
-          alert('文件已成功刪除');
+          alert('File deleted successfully');
           this.listDocuments();
         } else {
-          alert('刪除失敗: ' + data.error);
+          alert('Delete failed: ' + data.error);
         }
       } catch (error) {
         alert('Error: ' + error.message);
       }
     },
 
-    // 查詢 RAG Engine
+    // Query RAG Engine
     async queryEngine() {
       if (!this.selectedEngineForQuery) {
-        alert('請選擇一個 RAG Engine');
+        alert('Please select a RAG Engine');
         return;
       }
 
       if (!this.queryForm.question.trim()) {
-        alert('請輸入問題');
+        alert('Please enter a question');
         return;
       }
 
       try {
-        this.queryResponse = '處理中，請稍候...';
+        this.queryResponse = 'Processing, please wait...';
 
         const response = await fetch('/api/rag/users/' + this.currentUserId + '/engines/' + this.selectedEngineForQuery + '/query', {
           method: 'POST',
@@ -586,21 +608,21 @@ async listEngines() {
         const data = await response.json();
 
         if (data.success) {
-          let formattedResponse = '問題: ' + this.queryForm.question + '\n\n回答: ' + data.answer + '\n\n來源:';
+          let formattedResponse = 'Question: ' + this.queryForm.question + '\n\nAnswer: ' + data.answer + '\n\nSources:';
 
           if (data.sources && data.sources.length > 0) {
             data.sources.forEach((source, index) => {
               formattedResponse += '\n' + (index + 1) + '. ' + (source.title || source.name || 'Unknown');
             });
           } else {
-            formattedResponse += '\n無特定來源';
+            formattedResponse += '\nNo specific sources';
           }
 
-          formattedResponse += '\n\n時間戳: ' + new Date(data.timestamp).toLocaleString();
+          formattedResponse += '\n\nTimestamp: ' + new Date(data.timestamp).toLocaleString();
           this.queryResponse = formattedResponse;
           this.queryResponseClass = 'success';
         } else {
-          this.queryResponse = '錯誤: ' + data.error;
+          this.queryResponse = 'Error: ' + data.error;
           this.queryResponseClass = 'error';
         }
       } catch (error) {
@@ -615,7 +637,7 @@ async listEngines() {
       const date = new Date(dateString);
       // Add 8 hours (8 * 60 * 60 * 1000 milliseconds)
       const utcPlus8Date = new Date(date.getTime() + (8 * 60 * 60 * 1000));
-      return utcPlus8Date.toLocaleString();
+      return utcPlus8Date.toLocaleString('en-US');
     }
   }
 }

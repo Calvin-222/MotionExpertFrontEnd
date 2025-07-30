@@ -10,6 +10,16 @@
 
   --vt-c-indigo: #2c3e50;
 
+  /* Red Accent System */
+  --vt-c-red: #e63946;
+  --vt-c-red-hover: #c42834;
+  --vt-c-red-light: #f8d7da;
+  --vt-c-red-status: #dc3545;
+
+  /* Status Colors */
+  --vt-c-green: #28a745;
+  --vt-c-yellow: #ffc107;
+
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
   --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
@@ -19,6 +29,21 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+
+  /* Professional Text Colors */
+  --vt-c-text-primary: #212529;
+  --vt-c-text-secondary: #6c757d;
+
+  /* Border System */
+  --vt-c-border-light: #dee2e6;
+  --vt-c-border-medium: #d9d9d9;
+  --vt-c-border-input: #ccc;
+
+  /* Background System */
+  --vt-c-bg-grey: #f5f5f5;
+  --vt-c-bg-grey-medium: #f0f2f5;
+  --vt-c-bg-hover: #e9ecef;
+  --vt-c-bg-input: #f9f9f9;
 }
 
 /* semantic color variables for this project */
@@ -32,6 +57,18 @@
 
   --color-heading: var(--vt-c-text-light-1);
   --color-text: var(--vt-c-text-light-1);
+
+  /* Red Accent Variables */
+  --color-primary: var(--vt-c-red);
+  --color-primary-hover: var(--vt-c-red-hover);
+  --color-accent: var(--vt-c-red);
+
+  /* Professional Variables */
+  --color-text-primary: var(--vt-c-text-primary);
+  --color-text-secondary: var(--vt-c-text-secondary);
+  --color-border-light: var(--vt-c-border-light);
+  --color-bg-grey: var(--vt-c-bg-grey);
+  --color-bg-hover: var(--vt-c-bg-hover);
 
   --section-gap: 160px;
 }
@@ -54,8 +91,17 @@
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* Apply margin reset only to specific elements, not icons */
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, div:not([class*="fa-"]) {
   margin: 0;
   font-weight: normal;
+}
+
+/* Preserve FontAwesome styles */
+.fa, .fas, .far, .fal, .fad, .fab {
+  font-family: "Font Awesome 5 Free", "Font Awesome 5 Pro", "Font Awesome 5 Brands" !important;
 }
 
 body {
