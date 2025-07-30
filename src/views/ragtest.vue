@@ -146,6 +146,7 @@
               <tr>
                 <th>文件ID</th>
                 <th>原始文件名</th>
+                <th>上傳時間</th>
                 <th>操作</th>
               </tr>
             </thead>
@@ -153,6 +154,7 @@
               <tr v-for="doc in documents" :key="doc.fileId || doc.id">
                 <td>{{ doc.fileId || doc.id || 'N/A' }}</td>
                 <td>{{ doc.originalFileName || doc.displayName || doc.filename || doc.name || 'Unknown' }}</td>
+                <td>{{ formatDate(doc.created_at) || 'N/A' }}</td>
                 <td>
                   <button @click="deleteDocument(doc.fileId || doc.id)">刪除</button>
                 </td>
@@ -497,14 +499,21 @@ async listEngines() {
           let documentsList = [];
 
           if (Array.isArray(data.documents)) {
-            documentsList = data.documents;
+            documentsList = data.documents.map(doc => ({
+              ...doc,
+              fileId: doc.id,
+              originalFileName: doc.name,
+              created_at: doc.created_at
+            }));
           } else if (data.documents && typeof data.documents === 'object') {
+            // Fix this part - entry[1] is the object with filename and created_at
             documentsList = Object.entries(data.documents).map(entry => ({
               id: entry[0],
               fileId: entry[0],
-              originalFileName: entry[1],
-              displayName: entry[1],
-              filename: entry[1]
+              originalFileName: entry[1].filename,    // ← Was entry[1], should be entry[1].filename
+              displayName: entry[1].filename,         // ← Was entry[1], should be entry[1].filename
+              filename: entry[1].filename,            // ← Was entry[1], should be entry[1].filename
+              created_at: entry[1].created_at         // ← Add this line!
             }));
           } else {
             documentsList = [];
