@@ -199,10 +199,11 @@ button:disabled, .btn:disabled {
   box-shadow: none;
 }
 
-/* Table Styles */
+/* Table Styles - MERGED AND FIXED */
 .table-container {
   margin-top: 20px;
   overflow-x: auto;
+  position: relative;
 }
 
 table {
@@ -213,6 +214,8 @@ table {
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid #e0e0e0;
+  position: relative;
+  z-index: 1;
 }
 
 th {
@@ -230,6 +233,12 @@ td {
   vertical-align: middle;
   color: #333333;
   background: #ffffff;
+  position: relative;
+  overflow: visible;
+}
+
+tr {
+  position: relative;
 }
 
 tr:hover td {
@@ -282,27 +291,90 @@ tr:last-child td {
   color: #721c24;
 }
 
-/* Badge Styles */
+/* Badge Styles - REMOVED STYLING, PLAIN TEXT ONLY */
 .owner-badge, .shared-badge {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.8em;
-  font-weight: 500;
-  border: 1px solid;
+  /* Remove all badge styling */
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.9em;
+  font-weight: normal;
+  border: none;
+  display: inline;
+  position: static;
+  white-space: nowrap;
+  list-style: none !important;
+  list-style-type: none !important;
+  background: none;
+  color: #333333; /* Use normal text color */
+  border-color: none;
 }
 
+.owner-badge::before, .shared-badge::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Remove the different colors - both badges now look the same */
 .owner-badge {
-  background: #d4edda;
-  color: #155724;
-  border-color: #c3e6cb;
+  background: none;
+  color: #333333;
+  border-color: none;
+  box-shadow : none;
 }
 
 .shared-badge {
-  background: #d1ecf1;
-  color: #0c5460;
-  border-color: #bee5eb;
+  background: none;
+  color: #333333;
+  border-color: none;
+  box-shadow: none;
 }
 
+/* Make select boxes smaller in table cells */
+.visibility-controls select {
+  padding: 4px 8px;
+  font-size: 0.7em;
+  min-width: 85px;
+  max-width: 100px;
+  border-radius: 3px;
+}
+
+/* Make buttons in table cells smaller */
+.visibility-controls .btn-small,
+.sharing-controls .btn-small {
+  padding: 4px 8px;
+  font-size: 0.75em;
+  min-width: 40px;
+}
+
+/* Make input fields in table smaller */
+.sharing-controls input {
+  padding: 4px 8px;
+  font-size: 0.8em;
+  max-width: 80px;
+  min-width: 60px;
+}
+
+/* Make status text smaller */
+.status-text {
+  color: #6c757d;
+  font-size: 0.75em;
+  font-style: italic;
+}
+
+/* Reduce gap between elements in controls */
+.visibility-controls, .sharing-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+/* Make table cells with controls more compact */
+td:nth-child(2), /* Change Visibility column */
+td:nth-child(5)  /* Direct Sharing column */ {
+  padding: 8px;
+  min-width: 150px;
+}
 /* Control Styles */
 .visibility-controls, .sharing-controls {
   display: flex;

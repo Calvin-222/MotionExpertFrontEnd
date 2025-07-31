@@ -66,9 +66,13 @@
                   </td>
                   <td>{{ formatDate(engine.createdAt) }}</td>
                   <td>
-                    <span v-if="engine.isOwner" class="badge owner-badge">{{ engine.comingFrom }}</span>
-                    <span v-else class="badge shared-badge">{{ engine.comingFrom }}</span>
-                  </td>
+                      <span v-if="engine.isOwner" class="badge owner-badge">
+                        {{ engine.comingFrom || engine.createdBy || 'Self Created' }}
+                      </span>
+                      <span v-else class="badge shared-badge">
+                        {{ engine.comingFrom || engine.sharedBy || engine.originalOwner || 'Shared' }}
+                      </span>
+                    </td>
                   <td>
                     <div class="sharing-controls" v-if="engine.isOwner">
                       <input
