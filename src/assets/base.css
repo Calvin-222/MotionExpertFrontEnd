@@ -73,19 +73,8 @@
   --section-gap: 160px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
 
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-  }
-}
 
 *,
 *::before,
@@ -93,8 +82,24 @@
   box-sizing: border-box;
 }
 
-/* Apply margin reset only to specific elements, not icons */
-body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, div:not([class*="fa-"]) {
+/* More selective resets - only target specific contexts */
+.home-container *,
+.rag-container *,
+.main-content * {
+  margin: 0;
+}
+
+/* OR use a less aggressive reset */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Only reset margins for navigation and content areas, not all pages */
+.sidebar ul,
+.sidebar li,
+.main-nav ul,
+.main-nav li {
   margin: 0;
   font-weight: normal;
 }
@@ -129,4 +134,14 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Specific resets for components that need them */
+.home-container h1,
+.home-container h2,
+.home-container h3,
+.rag-container h1,
+.rag-container h2,
+.rag-container h3 {
+  font-weight: 600; /* Restore proper font weights where needed */
 }
