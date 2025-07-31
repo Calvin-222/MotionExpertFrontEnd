@@ -81,6 +81,25 @@ body {
     margin-right: 15px;
     font-size: 18px;
 }
+.user-details .logout-btn {
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    margin: 2px 0 !important;
+    min-width: auto !important;
+    width: auto !important;
+    display: inline-block !important;
+    border-radius: 4px !important;
+    background: var(--primary-red) !important;
+    color: white !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-weight: normal !important;
+    transition: background-color 0.2s !important;
+}
+
+.user-details .logout-btn:hover {
+    background: #c42834 !important;
+}
 
 .user-details h3 {
     font-size: 18px;  /* 增加字體大小 (從16px) */
