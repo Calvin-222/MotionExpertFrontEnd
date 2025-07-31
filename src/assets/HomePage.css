@@ -40,6 +40,10 @@ body {
     left: 0;
 }
 
+.main-content header {
+  text-align: center;
+}
+
 .container {
     display: flex;
     width: 100vw;

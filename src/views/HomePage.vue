@@ -99,18 +99,19 @@
       <div class="main-content">
         <!-- 頂部標題 -->
         <header>
-          <center><h1>Home</h1></center>
+          <h1>Home</h1>
         </header>
 
         <!-- 功能模塊 -->
         <div class="feature-modules">
           <div class="module-row">
-<router-link to="/ragtest" class="module" style="text-decoration: none; color:inherit;">
+            <router-link to="/ragtest" class="module" style="text-decoration: none; color:inherit;">
                 <div class="module-icon red-bg">
                   <i class="fas fa-cube"></i>
                 </div>
               <div class="module-name">Rag trainer</div>
             </router-link>
+
             <router-link to="/synopsis-editor" class="module" style="text-decoration: none; color:inherit;">
                 <div class="module-icon red-bg">
                   <i class="fas fa-cube"></i>
