@@ -105,18 +105,18 @@
         <!-- 功能模塊 -->
         <div class="feature-modules">
           <div class="module-row">
-            <div class="module">
-              <div class="module-icon red-bg">
-                <i class="fas fa-film"></i>
-              </div>
-              <div class="module-name">Project Manager</div>
-            </div>
-            <div class="module">
-              <div class="module-icon red-bg">
-                <i class="fas fa-chart-line"></i>
-              </div>
-              <div class="module-name">Prediction Analyser</div>
-            </div>
+<router-link to="/ragtest" class="module" style="text-decoration: none; color:inherit;">
+                <div class="module-icon red-bg">
+                  <i class="fas fa-cube"></i>
+                </div>
+              <div class="module-name">Rag trainer</div>
+            </router-link>
+            <router-link to="/synopsis-editor" class="module" style="text-decoration: none; color:inherit;">
+                <div class="module-icon red-bg">
+                  <i class="fas fa-cube"></i>
+                </div>
+              <div class="module-name">Synopsis Editor</div>
+            </router-link>
             <div class="module">
               <div class="module-icon red-bg">
                 <i class="fas fa-money-bill-wave"></i>
@@ -149,18 +149,19 @@
               </div>
               <div class="module-name">Project Overview</div>
             </div>
-            <router-link to="/ragtest" class="module" style="text-decoration: none; color:inherit;">
-                <div class="module-icon red-bg">
-                  <i class="fas fa-cube"></i>
-                </div>
-              <div class="module-name">Rag trainer</div>
-            </router-link>
-            <router-link to="/synopsis-editor" class="module" style="text-decoration: none; color:inherit;">
-                <div class="module-icon red-bg">
-                  <i class="fas fa-cube"></i>
-                </div>
-              <div class="module-name">Synopsis Editor</div>
-            </router-link>
+            <div class="module">
+              <div class="module-icon red-bg">
+                <i class="fas fa-film"></i>
+              </div>
+              <div class="module-name">Project Manager</div>
+            </div>
+            <div class="module">
+              <div class="module-icon red-bg">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="module-name">Prediction Analyser</div>
+            </div>
+
 
             <div class="module">
               <div class="module-icon red-bg">
