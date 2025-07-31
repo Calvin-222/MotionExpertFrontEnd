@@ -97,10 +97,6 @@
 
       <!-- 主要內容區 -->
       <div class="main-content">
-        <!-- 頂部標題 -->
-        <header>
-          <h1>Home</h1>
-        </header>
 
         <!-- 功能模塊 -->
         <div class="feature-modules">
