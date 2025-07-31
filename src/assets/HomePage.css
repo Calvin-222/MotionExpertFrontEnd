@@ -279,20 +279,6 @@ header {
     box-sizing: border-box;
 }
 
-header h1 {
-    font-size: 38px;
-    font-weight: 700;
-    background: linear-gradient(90deg, #e63946 0%, #ff4603 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 2px 8px rgba(230,57,70,0.15), 0 1px 0 #ffffff3b;
-    position: relative;
-    padding-bottom: 12px;
-    margin-bottom: 8px;
-    letter-spacing: 2px;
-    display: inline-block;
-}
-
 .feature-modules {
     margin: 0 20px 25px;
     padding: 0; /* Remove any padding that might interfere */
