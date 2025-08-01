@@ -487,6 +487,8 @@ export default {
             successCount++;
             this.uploadFileResponse += '\n✅ ' + file.name + ' uploaded successfully';
             this.uploadFileResponseClass = 'success';
+            alert('File' + file.name + ' added successfully');
+
           } else {
             failCount++;
             this.uploadFileResponse += '\n❌ ' + file.name + ' upload failed: ' + data.error;
