@@ -271,6 +271,7 @@ body {
     flex-direction: column;
     width: calc(100vw - 300px); /* 計算剩餘寬度，300px是sidebar的寬度 */
     position: relative;
+    padding-top: 32px; /* 新增的建議代碼行 */
 }
 
 header {
