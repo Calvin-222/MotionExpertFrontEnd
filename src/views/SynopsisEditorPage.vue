@@ -1,3 +1,4 @@
+<!--For git purpose-->
 <!-- filepath: /Users/cc/Desktop/MotionExpert_MyVersion/lab-spa/src/views/SynopsisEditorPage.vue -->
 <template>
   <div class="synopsis-editor-container">

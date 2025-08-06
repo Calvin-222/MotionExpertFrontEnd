@@ -1,3 +1,4 @@
+<!--For git purpose-->
 <template>
   <div class="home-container">
     <div class="container">

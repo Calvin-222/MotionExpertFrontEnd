@@ -1,3 +1,4 @@
+<!--For git purpose-->
 <template>
   <div class="login-page">
     <div class="login-container">

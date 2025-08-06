@@ -1,3 +1,4 @@
+<!--For git purpose-->
 <template>
   <div class="register-page">
     <div class="register-container">

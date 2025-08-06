@@ -1,4 +1,6 @@
+/* for git purpose */
 /* Register page specific resets to override base.css */
+
 .register-page * {
   margin: revert;
   font-weight: revert;
