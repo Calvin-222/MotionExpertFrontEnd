@@ -10,9 +10,9 @@
         <!-- 模板名稱 -->
         <div class="field-group">
           <label>模板名稱</label>
-          <input 
-            v-model="localTemplate.templateName" 
-            type="text" 
+          <input
+            v-model="localTemplate.templateName"
+            type="text"
             placeholder="輸入模板名稱..."
           />
         </div>
@@ -20,8 +20,8 @@
         <!-- 設為預設模板 -->
         <div class="field-group checkbox-group">
           <label class="checkbox-label">
-            <input 
-              v-model="localTemplate.is_default" 
+            <input
+              v-model="localTemplate.is_default"
               type="checkbox"
             />
             設為預設模板
@@ -38,16 +38,16 @@
           </div>
 
           <div class="sections-list">
-            <div 
-              v-for="(section, sectionIndex) in localTemplate.sections" 
+            <div
+              v-for="(section, sectionIndex) in localTemplate.sections"
               :key="section.id"
               class="section-editor"
             >
               <div class="section-header">
                 <div class="section-title-group">
                   <label>區段標題 (H2):</label>
-                  <input 
-                    v-model="section.title" 
+                  <input
+                    v-model="section.title"
                     class="section-title-input"
                     placeholder="例如：Act 1: Setup"
                   />
@@ -58,21 +58,21 @@
                     <option value="half-width">半寬（並排）</option>
                     <option value="full-width">全寬（單行）</option>
                   </select>
-                  <button 
+                  <button
                     @click="moveSection(sectionIndex, 'up')"
                     :disabled="sectionIndex === 0"
                     class="btn-move"
                     type="button">
                     ↑
                   </button>
-                  <button 
+                  <button
                     @click="moveSection(sectionIndex, 'down')"
                     :disabled="sectionIndex === localTemplate.sections.length - 1"
                     class="btn-move"
                     type="button">
                     ↓
                   </button>
-                  <button 
+                  <button
                     @click="removeSection(sectionIndex)"
                     :disabled="localTemplate.sections.length <= 1"
                     class="btn-remove"
@@ -86,8 +86,8 @@
               <div class="fields-editor">
                 <div class="fields-header">
                   <h4>欄位 (Labels & Inputs)</h4>
-                  <button 
-                    @click="addField(sectionIndex)" 
+                  <button
+                    @click="addField(sectionIndex)"
                     class="btn-add-field"
                     type="button">
                     + 新增欄位
@@ -95,24 +95,24 @@
                 </div>
 
                 <div class="fields-list">
-                  <div 
-                    v-for="(field, fieldIndex) in section.fields" 
+                  <div
+                    v-for="(field, fieldIndex) in section.fields"
                     :key="field.id"
                     class="field-editor"
                   >
                     <div class="field-controls-row">
                       <div class="field-label-group">
                         <label>欄位標籤 (Label):</label>
-                        <input 
-                          v-model="field.label" 
+                        <input
+                          v-model="field.label"
                           class="field-label-input"
                           placeholder="例如：Opening Scene"
                         />
                       </div>
-                      
+
                       <div class="field-type-group">
                         <label>輸入類型:</label>
-                        <select v-model="field.type" class="field-type-select">
+                        <select v-model="field.type" @change="handleFieldTypeChange(field)" class="field-type-select">
                           <option value="textarea">多行文字框</option>
                           <option value="text">單行文字框</option>
                           <option value="checkbox">勾選框</option>
@@ -124,8 +124,8 @@
                     <div class="field-settings">
                       <div class="field-placeholder-group">
                         <label>提示文字 (Placeholder):</label>
-                        <input 
-                          v-model="field.placeholder" 
+                        <input
+                          v-model="field.placeholder"
                           class="field-placeholder-input"
                           placeholder="例如：Describe the opening scene..."
                         />
@@ -134,31 +134,33 @@
                       <!-- 下拉選單選項設置 -->
                       <div v-if="field.type === 'select'" class="select-options">
                         <label>選項 (每行一個):</label>
-                        <textarea 
-                          :value="getOptionsText(field)"
-                          @input="updateFieldOptions(field, $event.target.value)"
+                        <textarea
+                          v-model="field.optionsText"
+                          @input="updateFieldOptionsFromText(field)"
                           placeholder="選項1&#10;選項2&#10;選項3"
+                          rows="4"
+                          cols="50"
                         ></textarea>
                       </div>
 
                       <div class="field-actions">
                         <label class="required-checkbox">
-                          <input 
-                            v-model="field.required" 
+                          <input
+                            v-model="field.required"
                             type="checkbox"
                           />
                           必填欄位
                         </label>
-                        
+
                         <div class="field-move-buttons">
-                          <button 
+                          <button
                             @click="moveField(sectionIndex, fieldIndex, 'up')"
                             :disabled="fieldIndex === 0"
                             class="btn-move-field"
                             type="button">
                             ↑
                           </button>
-                          <button 
+                          <button
                             @click="moveField(sectionIndex, fieldIndex, 'down')"
                             :disabled="fieldIndex === section.fields.length - 1"
                             class="btn-move-field"
@@ -166,8 +168,8 @@
                             ↓
                           </button>
                         </div>
-                        
-                        <button 
+
+                        <button
                           @click="removeField(sectionIndex, fieldIndex)"
                           :disabled="section.fields.length <= 1"
                           class="btn-remove-field"
@@ -231,29 +233,31 @@ export default {
       deep: true,
       handler(newTemplate) {
         console.log('TemplateEditor received template:', newTemplate);
-        
+
         if (newTemplate) {
           // 深度拷貝模板數據
           this.localTemplate = JSON.parse(JSON.stringify(newTemplate));
-          
+
           // 確保每個區段都有必要的屬性
           this.localTemplate.sections = this.localTemplate.sections || [];
-          
+
           this.localTemplate.sections.forEach((section, index) => {
             section.id = section.id || `section_${Date.now()}_${index}`;
             section.order = section.order || index + 1;
             section.layoutClass = section.layoutClass || 'full-width';
             section.fields = section.fields || [];
-            
+
             section.fields.forEach((field, fieldIndex) => {
               field.id = field.id || `field_${Date.now()}_${fieldIndex}`;
               field.order = field.order || fieldIndex + 1;
               field.required = field.required || false;
               field.placeholder = field.placeholder || '';
-              
-              // 為 select 類型確保有 options 屬性
-              if (field.type === 'select' && !field.options) {
-                field.options = [];
+
+              // 為 select 類型確保有 options 屬性和 optionsText
+              if (field.type === 'select') {
+                field.options = field.options || [];
+                // 初始化 optionsText 用於 textarea 綁定
+                field.optionsText = field.optionsText || (field.options ? field.options.join('\n') : '');
               }
             });
           });
@@ -327,7 +331,9 @@ export default {
         label: '新欄位',
         placeholder: '輸入內容...',
         required: false,
-        order: section.fields.length + 1
+        order: section.fields.length + 1,
+        options: [],
+        optionsText: ''
       };
       section.fields.push(newField);
     },
@@ -376,8 +382,38 @@ export default {
 
     // 更新下拉選單選項
     updateFieldOptions(field, optionsText) {
-      const options = optionsText.split('\n').filter(option => option.trim());
+      // 按換行符分割，過濾空行但保留有內容的行
+      const options = optionsText
+        .split('\n')
+        .map(option => option.trim())
+        .filter(option => option.length > 0);
+
       field.options = options;
+      console.log('Updated field options:', field.options);
+    },
+
+    // 新方法：從 optionsText 更新選項
+    updateFieldOptionsFromText(field) {
+      if (field.optionsText) {
+        const options = field.optionsText
+          .split('\n')
+          .map(option => option.trim())
+          .filter(option => option.length > 0);
+
+        field.options = options;
+        console.log('Updated field options from text:', field.options);
+      } else {
+        field.options = [];
+      }
+    },
+
+    // 處理欄位類型變更
+    handleFieldTypeChange(field) {
+      if (field.type === 'select') {
+        // 當變更為下拉選單時，初始化相關屬性
+        field.options = field.options || [];
+        field.optionsText = field.optionsText || '';
+      }
     },
 
     // 保存模板
@@ -766,13 +802,19 @@ export default {
 .select-options textarea {
   width: 100%;
   resize: vertical;
-  min-height: 80px;
+  min-height: 100px;
+  max-height: 200px;
   font-size: 13px;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border: 2px solid #e0e0e0;
-  border-radius: 4px;
-  font-family: inherit;
+  border-radius: 6px;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
   box-sizing: border-box;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-y: auto;
 }
 
 .select-options textarea:focus {
@@ -882,35 +924,35 @@ export default {
   .template-editor-overlay {
     padding: 10px;
   }
-  
+
   .template-editor {
     max-height: 95vh;
   }
-  
+
   .editor-header,
   .editor-content,
   .editor-footer {
     padding: 20px;
   }
-  
+
   .field-controls-row {
     flex-direction: column;
   }
-  
+
   .section-controls {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .field-actions {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .editor-footer {
     flex-direction: column;
   }
-  
+
   .btn-cancel,
   .btn-save {
     width: 100%;

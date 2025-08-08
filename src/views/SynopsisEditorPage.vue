@@ -70,9 +70,9 @@
                     :id="field.id"
                     v-model="formData[field.id]">
                     <option value="">{{ field.placeholder || '請選擇...' }}</option>
-                    <option 
-                      v-for="option in field.options" 
-                      :key="option" 
+                    <option
+                      v-for="option in field.options"
+                      :key="option"
                       :value="option">
                       {{ option }}
                     </option>
@@ -706,7 +706,7 @@ export default {
       if (template) {
         // 準備編輯數據 - 將數據庫格式轉換為編輯器格式
         let templateStructure;
-        
+
         try {
           // 檢查 template_structure 是否已經是對象還是字符串
           if (typeof template.template_structure === 'string') {
@@ -727,7 +727,7 @@ export default {
 
           console.log('Setting editing template:', this.editingTemplate);
           this.showTemplateEditor = true;
-          
+
         } catch (error) {
           console.error('Error preparing template for editing:', error);
           alert('無法載入模板進行編輯，數據格式錯誤');
@@ -807,17 +807,17 @@ export default {
 
         const result = await response.json();
         console.log('Save result:', result);
-        
+
         if (result.success) {
           // 重新載入模板列表
           await this.loadUserTemplates();
-          
+
           // 如果是編輯現有模板，保持選中狀態
           if (templateData.id) {
             this.selectedTemplateId = templateData.id;
             await this.loadTemplate();
           }
-          
+
           this.showTemplateEditor = false;
           alert(templateData.id ? '模板更新成功！' : '模板創建成功！');
         } else {
