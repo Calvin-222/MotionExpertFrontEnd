@@ -190,6 +190,13 @@
         <button @click="$emit('close')" class="btn-cancel" type="button">
           取消
         </button>
+        <button 
+          v-if="editMode" 
+          @click="deleteTemplate" 
+          class="btn-delete" 
+          type="button">
+          刪除模板
+        </button>
         <button @click="saveTemplate" class="btn-save" type="button">
           {{ editMode ? '更新模板' : '創建模板' }}
         </button>
@@ -455,6 +462,46 @@ export default {
 
       // 發射保存事件
       this.$emit('save', this.localTemplate);
+    },
+
+    // 刪除模板
+    async deleteTemplate() {
+      if (!this.localTemplate.id) {
+        alert('無法刪除：模板ID不存在');
+        return;
+      }
+
+      // 確認對話框
+      const confirmDelete = confirm(`確定要刪除模板「${this.localTemplate.templateName}」嗎？此操作無法復原。`);
+      if (!confirmDelete) {
+        return;
+      }
+
+      try {
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(`/api/templates/${this.localTemplate.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        const result = await response.json();
+        console.log('Delete result:', result);
+
+        if (response.ok && result.success) {
+          alert('模板刪除成功！');
+          // 發射刪除事件，讓父組件知道模板已被刪除
+          this.$emit('delete', this.localTemplate.id);
+          this.$emit('close');
+        } else {
+          throw new Error(result.message || 'Delete failed');
+        }
+      } catch (error) {
+        console.error('Error deleting template:', error);
+        alert(`刪除模板失敗: ${error.message}`);
+      }
     }
   }
 };
@@ -890,7 +937,7 @@ export default {
   border-radius: 0 0 12px 12px;
 }
 
-.btn-cancel, .btn-save {
+.btn-cancel, .btn-save, .btn-delete {
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
@@ -908,6 +955,16 @@ export default {
 
 .btn-cancel:hover {
   background-color: #5a6268;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
 }
 
 .btn-save {
@@ -954,7 +1011,8 @@ export default {
   }
 
   .btn-cancel,
-  .btn-save {
+  .btn-save,
+  .btn-delete {
     width: 100%;
   }
 }

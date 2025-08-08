@@ -142,6 +142,7 @@
       :template="editingTemplate"
       @close="showTemplateEditor = false"
       @save="saveTemplate"
+      @delete="handleTemplateDelete"
     />
   </div>
 </template>
@@ -828,6 +829,26 @@ export default {
         alert(`保存模板失敗: ${error.message}`);
       }
     },
+    
+    // 處理模板刪除
+    async handleTemplateDelete(deletedTemplateId) {
+      console.log('Template deleted:', deletedTemplateId);
+      
+      // 重新載入模板列表
+      await this.loadUserTemplates();
+      
+      // 如果刪除的是當前選中的模板，切換到第一個可用模板或備用模板
+      if (this.selectedTemplateId === deletedTemplateId) {
+        if (this.userTemplates.length > 0) {
+          this.selectedTemplateId = this.userTemplates[0].id;
+          await this.loadTemplate();
+        } else {
+          // 如果沒有模板了，使用備用模板
+          this.createFallbackTemplate();
+        }
+      }
+    },
+    
     // 發送後續指令給 AI (此部分可以類似地修改為呼叫後端)
     async sendFollowUp() {
       if (!this.followUpPrompt.trim()) {
