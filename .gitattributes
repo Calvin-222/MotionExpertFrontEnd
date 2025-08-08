@@ -1,11 +1,11 @@
 * text=auto eol=lf
-SynopsisEditorPage.vue merge=ours 
+
 HomePage.vue merge=ours
 Login.vue merge=ours
 register.vue merge=ours
 HomePage.css merge=ours
 Login.css merge=ours
-SynopsisEditorPage.css merge=ours
+
 register.css merge=ours
 
 
