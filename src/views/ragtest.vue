@@ -209,7 +209,7 @@ export default {
   data() {
     return {
       // Auth state
-      authToken: localStorage.getItem('token'),
+      Tokenoken: localStorage.getItem('token'),
       engineVisibilities: {},
       // Forms
       engineForm: {
@@ -291,7 +291,7 @@ export default {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + this.authToken
+            'Authorization': 'Bearer ' + this.Tokenoken
           },
           body: JSON.stringify({ visibility: newVisibility })
         });
@@ -324,7 +324,7 @@ export default {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + this.authToken,
+            'Authorization': 'Bearer ' + this.Tokenoken,
           },
           body: JSON.stringify({
             engineName: this.engineForm.name,
@@ -356,7 +356,7 @@ export default {
         const response = await fetch('/api/rag/users/' + this.currentUserId + '/engines', {
           method: 'GET',
           headers: {
-            'Authorization': 'Bearer ' + this.authToken,
+            'Authorization': 'Bearer ' + this.Tokenoken,
           },
         });
 
@@ -394,7 +394,7 @@ export default {
         const response = await fetch('/api/rag/users/' + this.currentUserId + '/engines/' + engineId, {
           method: 'DELETE',
           headers: {
-            'Authorization': 'Bearer ' + this.authToken,
+            'Authorization': 'Bearer ' + this.Tokenoken,
           },
         });
 
@@ -426,7 +426,7 @@ export default {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + this.authToken,
+            'Authorization': 'Bearer ' + this.Tokenoken,
           },
           body: JSON.stringify({ targetUsername: targetUsername }),
         });
@@ -476,7 +476,7 @@ export default {
           const response = await fetch('/api/rag/users/' + this.currentUserId + '/upload', {
             method: 'POST',
             headers: {
-              'Authorization': 'Bearer ' + this.authToken,
+              'Authorization': 'Bearer ' + this.Tokenoken,
             },
             body: formData,
           });
@@ -518,7 +518,7 @@ export default {
         const response = await fetch('/api/rag/users/' + this.currentUserId + '/engines/' + this.selectedEngineForDocuments + '/documents', {
           method: 'GET',
           headers: {
-            'Authorization': 'Bearer ' + this.authToken,
+            'Authorization': 'Bearer ' + this.Tokenoken,
           },
         });
 
@@ -570,7 +570,7 @@ export default {
         const response = await fetch('/api/rag/users/documents/' + fileId + '?ragId=' + this.selectedEngineForDocuments, {
           method: 'DELETE',
           headers: {
-            'Authorization': 'Bearer ' + this.authToken,
+            'Authorization': 'Bearer ' + this.Tokenoken,
           },
         });
 
@@ -606,7 +606,7 @@ export default {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + this.authToken,
+            'Authorization': 'Bearer ' + this.Tokenoken,
           },
           body: JSON.stringify({ question: this.queryForm.question }),
         });
