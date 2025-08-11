@@ -6,8 +6,26 @@
         <!-- 用戶資訊 -->
         <!-- Replace the hardcoded user info section -->
         <div class="user-info">
-          <div class="user-avatar">
-            <i class="fa fa-user"></i>
+          <div
+            class="user-avatar"
+            @click="triggerAvatarUpload"
+            style="cursor: pointer; position: relative;"
+            title="Click to change avatar"
+          >
+            <img
+              v-if="avatarUrl"
+              :src="avatarUrl"
+              alt="User Avatar"
+              class="avatar-img"
+            />
+            <i v-else class="fa fa-user"></i>
+            <input
+              ref="avatarInput"
+              type="file"
+              accept="image/*"
+              style="display: none"
+              @change="handleAvatarChange"
+            />
           </div>
           <div class="user-details">
 
@@ -257,6 +275,7 @@ export default {
       cardsPerPage: 6,
       currentUser: {},
       notifications: [],
+      avatarUrl: null,
       projects: [
         {
           title: 'Casino Fool',
@@ -437,6 +456,19 @@ export default {
     },
     Notifcations() {
       this.$router.push('/notifcations') // Redirect to the notifications page
+    },
+    triggerAvatarUpload() {
+      this.$refs.avatarInput.click();
+    },
+    handleAvatarChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.avatarUrl = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
     }
   },
   mounted() { // Combine both mounted functions
@@ -456,4 +488,22 @@ export default {
 
 <style>
 @import '@/assets/HomePage.css';
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #f5f5f5;
+  overflow: hidden;
+  cursor: pointer;
+  /* No layout changes for buttons */
+}
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
 </style>
