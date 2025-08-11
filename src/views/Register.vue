@@ -5,9 +5,9 @@
       <div class="register-header">
         <div class="register-logo">
 
-           <img src="@/components/icons/motionexpaiicon.svg" alt="Motion Expert Logo" />
+           <img src="@/components/icons/adthinker.svg" alt="Ad Thinker Logo" />
         </div>
-        <h1>Motion Expert</h1>
+        <h1>Ad Thinker</h1>
         <p>Create your account</p>
       </div>
       <div v-if="errorMessage" class="error-message">

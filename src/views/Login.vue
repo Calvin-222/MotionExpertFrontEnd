@@ -4,9 +4,9 @@
     <div class="login-container">
       <div class="login-header">
         <div class="login-logo">
-          <img src="@/components/icons/motionexpaiicon.svg" alt="Motion Expert Logo" />
+          <img src="@/components/icons/adthinker.svg" alt="Motion Expert Logo" />
         </div>
-        <h1>Motion Expert</h1>
+        <h1>Ad Thinker</h1>
         <p>Please sign in to your account</p>
       </div>
 
