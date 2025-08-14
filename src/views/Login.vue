@@ -6,7 +6,7 @@
         <div class="login-logo">
           <img src="@/components/icons/adthinker.svg" alt="Motion Expert Logo" />
         </div>
-        <h1>Ad Thinker</h1>
+        <h1>K Story Lab</h1>
         <p>Please sign in to your account</p>
       </div>
 

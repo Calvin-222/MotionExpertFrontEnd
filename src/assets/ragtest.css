@@ -21,7 +21,7 @@
 /* Header Styles */
 .rag-container h1 {
   font-size: 2.2em;
-  color: #e63946;
+  color: #331b05;
   font-weight: 600;
   text-align: center;
   margin-bottom: 40px;
@@ -31,12 +31,12 @@
 
 .rag-container h1 i {
   margin-right: 15px;
-  color: #e63946;
+  color: #331b05;
 }
 
 .rag-container h2 {
   font-size: 1.6em;
-  color: #e63946;
+  color: #331b05;
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 1px solid #e0e0e0;
@@ -45,7 +45,7 @@
 
 .rag-container h2 i {
   margin-right: 10px;
-  color: #e63946;
+  color: #331b05;
 }
 
 .rag-container h3 {
@@ -75,7 +75,7 @@
 
 /* Form Styles */
 form {
-  background: #ffffff; /* White form background */
+  background: #F1EDE4; /* White form background */
   padding: 20px;
   border-radius: 6px;
   border: 1px solid #e0e0e0;
@@ -125,7 +125,7 @@ input, textarea, select {
 
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: #e63946;
+  border-color: #331b05;
   box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.15);
   background: #ffffff;
 }
@@ -139,7 +139,7 @@ textarea {
 /* Button Styles */
 button, .btn {
   padding: 10px 20px;
-  background: #e63946;
+  background: #331b05;
   color: #ffffff;
   border: none;
   border-radius: 5px;
@@ -154,7 +154,7 @@ button, .btn {
 }
 
 button:hover:not(:disabled), .btn:hover:not(:disabled) {
-  background: #c42834;
+  background: #331b05;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(230, 57, 70, 0.25);
 }
@@ -219,7 +219,7 @@ table {
 }
 
 th {
-  background: #e63946;
+  background: #331b05;
   color: #ffffff;
   font-weight: 600;
   padding: 15px 12px;

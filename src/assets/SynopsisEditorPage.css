@@ -7,10 +7,10 @@
     --editor-text-primary: #333;
     --editor-text-secondary: #555;
     --editor-border-color: #d9d9d9;
-    --editor-primary-accent: #e63946; /* Primary red from HomePage */
+    --editor-primary-accent: #65360b;
     --editor-input-bg: #f9f9f9;
     --editor-input-border: #ccc;
-    --editor-button-hover-bg: #c42834;
+    --editor-button-hover-bg: #331b05;
 }
 
 .synopsis-editor-container {

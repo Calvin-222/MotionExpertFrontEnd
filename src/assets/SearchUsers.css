@@ -30,7 +30,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #e63946;
+  border-color: #65360b;
   box-shadow: 0 0 0 3px rgba(255, 38, 56, 0.3);
 }
 
@@ -76,7 +76,7 @@
 }
 
 .action-button {
-  background: #e63946;
+  background: #331b05;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -88,11 +88,11 @@
 }
 
 .action-button:hover {
-  background: #e63946;
+  background: #331b05;
 }
 
 .action-button:active {
-  background: #f94d5b;
+  background: #331b05;
   transform: translateY(1px);
 }
 

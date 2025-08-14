@@ -94,14 +94,14 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--color-primary, #d73527);
+  border-color: var(--color-primary, #331b05);
   box-shadow: 0 0 0 3px rgba(215, 53, 39, 0.1);
 }
 
 .login-btn {
   width: 100%;
   padding: 12px;
-  background: var(--color-primary, #d73527);
+  background: var(--color-primary, #331b05);
   color: white;
   border: none;
   border-radius: 8px;
@@ -113,7 +113,7 @@
 }
 
 .login-btn:hover:not(:disabled) {
-  background: var(--color-primary-hover, #c42d20);
+  background: var(--color-primary-hover, #331b05);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(215, 53, 39, 0.4);
 }
@@ -134,7 +134,7 @@
 }
 
 .register-link a {
-  color: var(--color-primary, #d73527);
+  color: var(--color-primary, #331b05);
   text-decoration: none;
   font-weight: 500 !important;
   font-size: 16px;

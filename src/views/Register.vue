@@ -5,9 +5,9 @@
       <div class="register-header">
         <div class="register-logo">
 
-           <img src="@/components/icons/adthinker.svg" alt="Ad Thinker Logo" />
+           <img src="@/components/icons/adthinker.svg" alt="K Story Lab Logo" />
         </div>
-        <h1>Ad Thinker</h1>
+        <h1>K Story Lab</h1>
         <p>Create your account</p>
       </div>
       <div v-if="errorMessage" class="error-message">

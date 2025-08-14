@@ -11,10 +11,10 @@
   --vt-c-indigo: #2c3e50;
 
   /* Red Accent System */
-  --vt-c-red: #e63946;
-  --vt-c-red-hover: #c42834;
-  --vt-c-red-light: #f8d7da;
-  --vt-c-red-status: #dc3545;
+  --vt-c-red: #65360b;
+  --vt-c-red-hover: #331b05;
+  --vt-c-red-light: #a1866f;
+  --vt-c-red-status: #8b5e3c;
 
   /* Status Colors */
   --vt-c-green: #28a745;
@@ -40,7 +40,7 @@
   --vt-c-border-input: #ccc;
 
   /* Background System */
-  --vt-c-bg-grey: #f5f5f5;
+  --vt-c-bg-grey: #F1EDE4;
   --vt-c-bg-grey-medium: #f0f2f5;
   --vt-c-bg-hover: #e9ecef;
   --vt-c-bg-input: #f9f9f9;
