@@ -116,7 +116,7 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #d73527;
+  border-color: #331b05;
   box-shadow: 0 0 0 3px rgba(215, 53, 39, 0.1);
 }
 
@@ -128,7 +128,7 @@
 .register-btn {
   width: 100%;
   padding: 12px;
-  background: #d73527;
+  background: #65360b;
   color: white;
   border: none;
   border-radius: 8px;
@@ -141,7 +141,7 @@
 }
 
 .register-btn:hover:not(:disabled) {
-  background: #c42d20;
+  background: #231304;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(215, 53, 39, 0.4);
 }
@@ -192,7 +192,7 @@
 }
 
 .login-link a {
-  color: #d73527;
+  color: #65360b;
   text-decoration: none;
   font-weight: 500 !important;
   font-size: 16px;
