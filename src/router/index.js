@@ -92,7 +92,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.title) {
     document.title = `${to.meta.title} - MotionExpert`
   } else {
-    document.title = 'MotionExpert'
+    document.title = 'K Story Lab'
   }
 
   if (to.meta.requiresAuth && !isAuthenticated) {
