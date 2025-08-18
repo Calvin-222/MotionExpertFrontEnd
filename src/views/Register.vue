@@ -4,7 +4,7 @@
       <div class="register-header">
         <div class="register-logo">
 
-           <img src="@/components/icons/motionexpaiicon.svg" alt="Mthinker Logo" />
+           <img src="@/components/icons/mthinker.svg" alt="Mthinker Logo" />
         </div>
         <h1>Mthinker</h1>
         <p>Create your account</p>

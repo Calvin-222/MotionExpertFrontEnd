@@ -1,0 +1,18 @@
+<svg width="150" height="150" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="100%" height="100%" fill="white" />
+
+  <!-- Thicker red letter A -->
+  <text
+    x="50%"
+    y="50%"
+    dominant-baseline="middle"
+    text-anchor="middle"
+    font-size="80"
+    font-weight="bold"
+    fill="#e63946"
+    font-family="Headline R"
+  >
+    M
+  </text>
+</svg>

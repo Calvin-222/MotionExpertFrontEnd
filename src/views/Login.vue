@@ -3,7 +3,7 @@
     <div class="login-container">
       <div class="login-header">
         <div class="login-logo">
-          <img src="@/components/icons/motionexpaiicon.svg" alt="Mthinker Logo" />
+          <img src="@/components/icons/mthinker.svg" alt="Mthinker Logo" />
         </div>
         <h1>Mthinker</h1>
         <p>Please sign in to your account</p>
