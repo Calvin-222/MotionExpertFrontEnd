@@ -897,7 +897,7 @@ export default {
       const userPrompt = this.followUpPrompt.trim();
 
       // 立即顯示用戶發送的訊息並清空輸入框
-      this.aiResponse = `${previousAIResponse}\n\n--- User Follow-up ---\n${userPrompt}\n\n✅ 已發送到後端處理中...`;
+      this.aiResponse = `${previousAIResponse}\n\n--- User Follow-up ---\n${userPrompt}\n\n`;
       this.followUpPrompt = ''; // 立即清空輸入框
 
       const token = localStorage.getItem('token');
