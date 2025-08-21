@@ -2,38 +2,38 @@
   <div class="template-editor-overlay" @click.self="$emit('close')">
     <div class="template-editor">
       <div class="editor-header">
-        <h2>{{ editMode ? '編輯模板' : '創建新模板' }}</h2>
+        <h2>{{ editMode ? 'Edit Template' : 'Create New Template' }}</h2>
         <button class="close-btn" @click="$emit('close')" type="button">×</button>
       </div>
 
       <div class="editor-content">
-        <!-- 模板名稱 -->
+        <!-- Template Name -->
         <div class="field-group">
-          <label>模板名稱</label>
+          <label>Template Name</label>
           <input
             v-model="localTemplate.templateName"
             type="text"
-            placeholder="輸入模板名稱..."
+            placeholder="Enter template name..."
           />
         </div>
 
-        <!-- 設為預設模板 -->
+        <!-- Set as Default Template -->
         <div class="field-group checkbox-group">
           <label class="checkbox-label">
             <input
               v-model="localTemplate.is_default"
               type="checkbox"
             />
-            設為預設模板
+            Set as Default Template
           </label>
         </div>
 
-        <!-- 區段編輯器 -->
+        <!-- Sections Editor -->
         <div class="sections-editor">
           <div class="sections-header">
-            <h3>模板區段 (H2 標題)</h3>
+            <h3>Template Sections</h3>
             <button @click="addSection" class="btn-add-section" type="button">
-              + 新增區段
+              + Add Section
             </button>
           </div>
 
@@ -45,18 +45,18 @@
             >
               <div class="section-header">
                 <div class="section-title-group">
-                  <label>區段標題 (H2):</label>
+                  <label>Section Title:</label>
                   <input
                     v-model="section.title"
                     class="section-title-input"
-                    placeholder="例如：Act 1: Setup"
+                    placeholder="e.g., Act 1: Setup"
                   />
                 </div>
                 <div class="section-controls">
-                  <label>佈局:</label>
+                  <label>Layout:</label>
                   <select v-model="section.layoutClass" class="layout-select">
-                    <option value="half-width">半寬（並排）</option>
-                    <option value="full-width">全寬（單行）</option>
+                    <option value="half-width">Half Width (Side by Side)</option>
+                    <option value="full-width">Full Width (Single Row)</option>
                   </select>
                   <button
                     @click="moveSection(sectionIndex, 'up')"
@@ -77,20 +77,20 @@
                     :disabled="localTemplate.sections.length <= 1"
                     class="btn-remove"
                     type="button">
-                    刪除區段
+                    Delete Section
                   </button>
                 </div>
               </div>
 
-              <!-- 欄位編輯器 -->
+              <!-- Fields Editor -->
               <div class="fields-editor">
                 <div class="fields-header">
-                  <h4>欄位 (Labels & Inputs)</h4>
+                  <h4>Fields (Labels & Inputs)</h4>
                   <button
                     @click="addField(sectionIndex)"
                     class="btn-add-field"
                     type="button">
-                    + 新增欄位
+                    + Add Field
                   </button>
                 </div>
 
@@ -102,42 +102,42 @@
                   >
                     <div class="field-controls-row">
                       <div class="field-label-group">
-                        <label>欄位標籤 (Label):</label>
+                        <label>Field Label:</label>
                         <input
                           v-model="field.label"
                           class="field-label-input"
-                          placeholder="例如：Opening Scene"
+                          placeholder="e.g., Opening Scene"
                         />
                       </div>
 
                       <div class="field-type-group">
-                        <label>輸入類型:</label>
+                        <label>Input Type:</label>
                         <select v-model="field.type" @change="handleFieldTypeChange(field)" class="field-type-select">
-                          <option value="textarea">多行文字框</option>
-                          <option value="text">單行文字框</option>
-                          <option value="checkbox">勾選框</option>
-                          <option value="select">下拉選單</option>
+                          <option value="textarea">Multi-line Text</option>
+                          <option value="text">Single-line Text</option>
+                          <option value="checkbox">Checkbox</option>
+                          <option value="select">Dropdown Menu</option>
                         </select>
                       </div>
                     </div>
 
                     <div class="field-settings">
                       <div class="field-placeholder-group">
-                        <label>提示文字 (Placeholder):</label>
+                        <label>Placeholder Text:</label>
                         <input
                           v-model="field.placeholder"
                           class="field-placeholder-input"
-                          placeholder="例如：Describe the opening scene..."
+                          placeholder="e.g., Describe the opening scene..."
                         />
                       </div>
 
-                      <!-- 下拉選單選項設置 -->
+                      <!-- Dropdown Menu Options -->
                       <div v-if="field.type === 'select'" class="select-options">
-                        <label>選項 (每行一個):</label>
+                        <label>Options (one per line):</label>
                         <textarea
                           v-model="field.optionsText"
                           @input="updateFieldOptionsFromText(field)"
-                          placeholder="選項1&#10;選項2&#10;選項3"
+                          placeholder="Option 1&#10;Option 2&#10;Option 3"
                           rows="4"
                           cols="50"
                         ></textarea>
@@ -149,7 +149,7 @@
                             v-model="field.required"
                             type="checkbox"
                           />
-                          必填欄位
+                          Required Field
                         </label>
 
                         <div class="field-move-buttons">
@@ -174,7 +174,7 @@
                           :disabled="section.fields.length <= 1"
                           class="btn-remove-field"
                           type="button">
-                          刪除欄位
+                          Delete Field
                         </button>
                       </div>
                     </div>
@@ -188,17 +188,17 @@
 
       <div class="editor-footer">
         <button @click="$emit('close')" class="btn-cancel" type="button">
-          取消
+          Cancel
         </button>
         <button 
           v-if="editMode" 
           @click="deleteTemplate" 
           class="btn-delete" 
           type="button">
-          刪除模板
+          Delete Template
         </button>
         <button @click="saveTemplate" class="btn-save" type="button">
-          {{ editMode ? '更新模板' : '創建模板' }}
+          {{ editMode ? 'Update Template' : 'Create Template' }}
         </button>
       </div>
     </div>
@@ -288,20 +288,20 @@ export default {
     }
   },
   methods: {
-    // 新增區段
+    // Add section
     addSection() {
       const newSection = {
         id: `section_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         type: 'section',
-        title: '新區段',
+        title: 'New Section',
         order: this.localTemplate.sections.length + 1,
         layoutClass: 'full-width',
         fields: [
           {
             id: `field_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             type: 'textarea',
-            label: '新欄位',
-            placeholder: '輸入內容...',
+            label: 'New Field',
+            placeholder: 'Enter content...',
             required: false,
             order: 1
           }
@@ -310,7 +310,7 @@ export default {
       this.localTemplate.sections.push(newSection);
     },
 
-    // 刪除區段
+    // Remove section
     removeSection(sectionIndex) {
       if (this.localTemplate.sections.length > 1) {
         this.localTemplate.sections.splice(sectionIndex, 1);
@@ -318,7 +318,7 @@ export default {
       }
     },
 
-    // 移動區段位置
+    // Move section position
     moveSection(sectionIndex, direction) {
       const sections = this.localTemplate.sections;
       if (direction === 'up' && sectionIndex > 0) {
@@ -329,14 +329,14 @@ export default {
       this.updateSectionOrders();
     },
 
-    // 新增欄位
+    // Add field
     addField(sectionIndex) {
       const section = this.localTemplate.sections[sectionIndex];
       const newField = {
         id: `field_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         type: 'textarea',
-        label: '新欄位',
-        placeholder: '輸入內容...',
+        label: 'New Field',
+        placeholder: 'Enter content...',
         required: false,
         order: section.fields.length + 1,
         options: [],
@@ -345,7 +345,7 @@ export default {
       section.fields.push(newField);
     },
 
-    // 刪除欄位
+    // Remove field
     removeField(sectionIndex, fieldIndex) {
       const section = this.localTemplate.sections[sectionIndex];
       if (section.fields.length > 1) {
@@ -354,7 +354,7 @@ export default {
       }
     },
 
-    // 移動欄位位置
+    // Move field position
     moveField(sectionIndex, fieldIndex, direction) {
       const fields = this.localTemplate.sections[sectionIndex].fields;
       if (direction === 'up' && fieldIndex > 0) {
@@ -365,21 +365,21 @@ export default {
       this.updateFieldOrders(this.localTemplate.sections[sectionIndex]);
     },
 
-    // 更新區段順序
+    // Update section orders
     updateSectionOrders() {
       this.localTemplate.sections.forEach((section, index) => {
         section.order = index + 1;
       });
     },
 
-    // 更新欄位順序
+    // Update field orders
     updateFieldOrders(section) {
       section.fields.forEach((field, index) => {
         field.order = index + 1;
       });
     },
 
-    // 獲取下拉選單選項文字
+    // Get dropdown options text
     getOptionsText(field) {
       if (field.options && Array.isArray(field.options)) {
         return field.options.join('\n');
@@ -387,9 +387,9 @@ export default {
       return '';
     },
 
-    // 更新下拉選單選項
+    // Update dropdown options
     updateFieldOptions(field, optionsText) {
-      // 按換行符分割，過濾空行但保留有內容的行
+      // Split by newline, filter empty lines but keep lines with content
       const options = optionsText
         .split('\n')
         .map(option => option.trim())
@@ -399,7 +399,7 @@ export default {
       console.log('Updated field options:', field.options);
     },
 
-    // 新方法：從 optionsText 更新選項
+    // New method: update options from optionsText
     updateFieldOptionsFromText(field) {
       if (field.optionsText) {
         const options = field.optionsText
@@ -414,65 +414,65 @@ export default {
       }
     },
 
-    // 處理欄位類型變更
+    // Handle field type change
     handleFieldTypeChange(field) {
       if (field.type === 'select') {
-        // 當變更為下拉選單時，初始化相關屬性
+        // When changing to dropdown, initialize related properties
         field.options = field.options || [];
         field.optionsText = field.optionsText || '';
       }
     },
 
-    // 保存模板
+    // Save template
     saveTemplate() {
-      // 驗證模板
+      // Validate template
       if (!this.localTemplate.templateName.trim()) {
-        alert('請輸入模板名稱');
+        alert('Please enter template name');
         return;
       }
 
       if (this.localTemplate.sections.length === 0) {
-        alert('模板至少需要一個區段');
+        alert('Template must have at least one section');
         return;
       }
 
-      // 檢查所有區段都有標題和欄位
+      // Check all sections have titles and fields
       for (const section of this.localTemplate.sections) {
         if (!section.title.trim()) {
-          alert('所有區段都需要標題');
+          alert('All sections must have titles');
           return;
         }
         if (section.fields.length === 0) {
-          alert('所有區段都至少需要一個欄位');
+          alert('All sections must have at least one field');
           return;
         }
         for (const field of section.fields) {
           if (!field.label.trim()) {
-            alert('所有欄位都需要標籤');
+            alert('All fields must have labels');
             return;
           }
         }
       }
 
-      // 更新順序
+      // Update orders
       this.updateSectionOrders();
       this.localTemplate.sections.forEach(section => {
         this.updateFieldOrders(section);
       });
 
-      // 發射保存事件
+      // Emit save event
       this.$emit('save', this.localTemplate);
     },
 
-    // 刪除模板
+    // Delete template
     async deleteTemplate() {
       if (!this.localTemplate.id) {
-        alert('無法刪除：模板ID不存在');
+        alert('Cannot delete: Template ID does not exist');
         return;
       }
 
-      // 確認對話框
-      const confirmDelete = confirm(`確定要刪除模板「${this.localTemplate.templateName}」嗎？此操作無法復原。`);
+      // Confirmation dialog
+      const confirmDelete = confirm(`Are you sure you want to delete template "${this.localTemplate.templateName}"? This action cannot be undone.`);
       if (!confirmDelete) {
         return;
       }
@@ -491,8 +491,8 @@ export default {
         console.log('Delete result:', result);
 
         if (response.ok && result.success) {
-          alert('模板刪除成功！');
-          // 發射刪除事件，讓父組件知道模板已被刪除
+          alert('Template deleted successfully!');
+          // Emit delete event to let parent component know template was deleted
           this.$emit('delete', this.localTemplate.id);
           this.$emit('close');
         } else {
@@ -500,7 +500,7 @@ export default {
         }
       } catch (error) {
         console.error('Error deleting template:', error);
-        alert(`刪除模板失敗: ${error.message}`);
+        alert(`Failed to delete template: ${error.message}`);
       }
     }
   }

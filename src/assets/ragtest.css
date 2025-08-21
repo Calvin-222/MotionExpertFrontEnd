@@ -180,16 +180,6 @@ button:hover:not(:disabled), .btn:hover:not(:disabled) {
   background: #c82333;
 }
 
-.btn-file {
-  background: #6c757d;
-  padding: 8px 16px;
-  font-size: 0.9em;
-}
-
-.btn-file:hover {
-  background: #5a6268;
-}
-
 button:disabled, .btn:disabled {
   background: #ccc;
   color: #888;

@@ -27,7 +27,7 @@
             </div>
             <div v-if="error && !userTemplates.length" class="error-info">
               <p>{{ error }}</p>
-              <p><small>使用預設模板繼續操作</small></p>
+              <p><small>Using default template to continue</small></p>
             </div>
           </div>
         </header>
@@ -92,15 +92,15 @@
           </template>
         </div>
 
-        <!-- 載入狀態 -->
+        <!-- Loading state -->
         <div v-else-if="loading" class="loading-state">
-          <p>載入模板中...</p>
+          <p>Loading template...</p>
         </div>
 
-        <!-- 錯誤狀態 -->
+        <!-- Error state -->
         <div v-else-if="error" class="error-state">
           <p>{{ error }}</p>
-          <button @click="loadUserTemplates" class="retry-btn">重試</button>
+          <button @click="loadUserTemplates" class="retry-btn">Retry</button>
         </div>
 
         <!-- RAG Engine 選擇 -->
@@ -112,8 +112,14 @@
             </option>
           </select>
         </div>
-        <button @click="submitSynopsis" class="submit-btn synopsis-action-btn main-generate-btn">
-          <i class="fas fa-cogs"></i> Generate
+        <button
+          @click="submitSynopsis"
+          class="submit-btn synopsis-action-btn main-generate-btn"
+          :disabled="isGenerating"
+        >
+          <i class="fas fa-spinner fa-spin" v-if="isGenerating"></i>
+          <i class="fas fa-cogs" v-else></i>
+          {{ isGenerating ? '正在處理中...' : 'Generate' }}
         </button>
       </div>
 
@@ -127,9 +133,20 @@
           </div>
           <div class="follow-up-section">
             <label for="followUpPrompt">Follow-up Instructions:</label>
-            <textarea id="followUpPrompt" v-model="followUpPrompt" placeholder="Enter further requirements or modifications for the AI..."></textarea>
-            <button @click="sendFollowUp" class="submit-btn synopsis-action-btn">
-              <i class="fas fa-paper-plane"></i> Send Follow-up
+            <textarea
+              id="followUpPrompt"
+              v-model="followUpPrompt"
+              placeholder="Enter further requirements or modifications for the AI..."
+              :disabled="isSendingFollowUp"
+            ></textarea>
+            <button
+              @click="sendFollowUp"
+              class="submit-btn synopsis-action-btn"
+              :disabled="isSendingFollowUp"
+            >
+              <i class="fas fa-spinner fa-spin" v-if="isSendingFollowUp"></i>
+              <i class="fas fa-paper-plane" v-else></i>
+              {{ isSendingFollowUp ? '正在發送中...' : 'Send Follow-up' }}
             </button>
           </div>
         </div>
@@ -192,6 +209,10 @@ export default {
       showTemplateEditor: false,
       loading: false,
       error: null,
+
+      // Loading states
+      isGenerating: false,
+      isSendingFollowUp: false,
     };
   },
   computed: {
@@ -253,6 +274,10 @@ export default {
   methods: {
     // 提交劇情概要，合併輸入並呼叫後端 API
     async submitSynopsis() {
+      if (this.isGenerating) return; // 防止重複提交
+
+      this.isGenerating = true; // 開始 loading
+
       let parts = [];
 
       // 如果有動態模板，使用動態模板生成
@@ -311,6 +336,7 @@ export default {
 
       if (!this.selectedEngineId) {
         this.aiResponse = '請先選擇 RAG Engine';
+        this.isGenerating = false; // 結束 loading
         return;
       }
 
@@ -335,11 +361,13 @@ export default {
         }
 
         const backendResponse = await response.json();
-        this.aiResponse = `Backend Response: ${backendResponse.message}\n\nAI Processed Output (from backend):\n${backendResponse.aiProcessedOutput || 'No AI output received.'}`;
+        this.aiResponse = backendResponse.aiProcessedOutput || 'No AI output received.';
 
       } catch (error) {
         console.error('Error submitting synopsis to backend:', error);
         this.aiResponse = `Error submitting synopsis: ${error.message}. Check console for details.`;
+      } finally {
+        this.isGenerating = false; // 結束 loading
       }
     },
     // 載入用戶 RAG engine 列表
@@ -829,14 +857,14 @@ export default {
         alert(`保存模板失敗: ${error.message}`);
       }
     },
-    
+
     // 處理模板刪除
     async handleTemplateDelete(deletedTemplateId) {
       console.log('Template deleted:', deletedTemplateId);
-      
+
       // 重新載入模板列表
       await this.loadUserTemplates();
-      
+
       // 如果刪除的是當前選中的模板，切換到第一個可用模板或備用模板
       if (this.selectedTemplateId === deletedTemplateId) {
         if (this.userTemplates.length > 0) {
@@ -848,9 +876,11 @@ export default {
         }
       }
     },
-    
+
     // 發送後續指令給 AI (現在使用與主要生成相同的完整提示詞)
     async sendFollowUp() {
+      if (this.isSendingFollowUp) return; // 防止重複提交
+
       if (!this.followUpPrompt.trim()) {
         alert('Please enter a follow-up prompt.');
         return;
@@ -861,15 +891,17 @@ export default {
         return;
       }
 
+      this.isSendingFollowUp = true; // 開始 loading
+
       const previousAIResponse = this.aiResponse;
       const userPrompt = this.followUpPrompt.trim();
 
       // 立即顯示用戶發送的訊息並清空輸入框
       this.aiResponse = `${previousAIResponse}\n\n--- User Follow-up ---\n${userPrompt}\n\n✅ 已發送到後端處理中...`;
       this.followUpPrompt = ''; // 立即清空輸入框
-      
+
       const token = localStorage.getItem('token');
-      
+
       try {
         const response = await fetch('/api/synopsis/follow-up', {
           method: 'POST',
@@ -889,23 +921,20 @@ export default {
           const errorData = await response.json().catch(() => ({ message: 'Failed to parse error response' }));
           throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || response.statusText}`);
         }
-        
+
         const backendFollowUpResponse = await response.json();
-        
-        // 顯示回應，包含使用的模板資訊
+
+        // 顯示回應，簡化格式
         let responseMessage = `${previousAIResponse}\n\n--- User Follow-up ---\n${userPrompt}\n\n`;
-        responseMessage += `✅ Backend Follow-up Response:\n${backendFollowUpResponse.message}`;
-        
-        if (backendFollowUpResponse.templateUsed) {
-          responseMessage += `\nTemplate Used: ${backendFollowUpResponse.templateUsed}`;
-        }
-        responseMessage += `\n\nAI Processed Output (from backend):\n${backendFollowUpResponse.aiProcessedOutput || 'No AI output received.'}`;
-        
+        responseMessage += backendFollowUpResponse.aiProcessedOutput || 'No AI output received.';
+
         this.aiResponse = responseMessage;
-        
+
       } catch (error) {
         console.error('Error sending follow-up to backend:', error);
         this.aiResponse = `${previousAIResponse}\n\n--- User Follow-up ---\n${userPrompt}\n\n❌ Error processing follow-up: ${error.message}`;
+      } finally {
+        this.isSendingFollowUp = false; // 結束 loading
       }
     },
     handleFileChange(event) {

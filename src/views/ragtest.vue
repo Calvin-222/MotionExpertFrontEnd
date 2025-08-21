@@ -18,14 +18,22 @@
               <label for="engineDescription">Description (Optional):</label>
               <input type="text" id="engineDescription" v-model="engineForm.description">
             </div>
-            <button type="submit" class="btn">Create RAG Engine</button>
+            <button
+              type="submit"
+              class="btn"
+              :disabled="isCreatingEngine"
+            >
+              <i class="fas fa-spinner fa-spin" v-if="isCreatingEngine"></i>
+              <i class="fas fa-plus" v-else></i>
+              {{ isCreatingEngine ? '正在創建中...' : 'Create RAG Engine' }}
+            </button>
           </form>
         </div>
 
         <!-- List User's RAG Engines -->
         <div class="subsection">
           <h3>My RAG Engines</h3>
-          <button @click="listEngines" class="btn btn-secondary">Refresh List</button>
+          <button @click="listEngines" class="btn">Refresh List</button>
 
           <div class="table-container" v-if="userEngines.length > 0">
             <table>
@@ -125,11 +133,19 @@
               <label>Select Files (Multiple files supported):</label>
               <div class="custom-file-input">
                 <input type="file" id="fileToUpload" ref="fileInput" @change="handleFileSelection" multiple style="display: none;">
-                <button type="button" @click="$refs.fileInput.click()" class="btn btn-file">Choose Files</button>
+                <button type="button" @click="$refs.fileInput.click()" class="btn">Choose Files</button>
                 <span>{{ selectedFilesText }}</span>
               </div>
             </div>
-            <button type="submit" class="btn">Upload Files</button>
+            <button
+              type="submit"
+              class="btn"
+              :disabled="isUploadingFiles"
+            >
+              <i class="fas fa-spinner fa-spin" v-if="isUploadingFiles"></i>
+              <i class="fas fa-upload" v-else></i>
+              {{ isUploadingFiles ? '正在上傳中...' : 'Upload Files' }}
+            </button>
           </form>
         </div>
 
@@ -146,7 +162,15 @@
                 </option>
               </select>
             </div>
-            <button @click="listDocuments" class="btn btn-secondary">Get Document List</button>
+            <button
+              @click="listDocuments"
+              class="btn"
+              :disabled="isListingDocuments"
+            >
+              <i class="fas fa-spinner fa-spin" v-if="isListingDocuments"></i>
+              <i class="fas fa-list" v-else></i>
+              {{ isListingDocuments ? '正在載入中...' : 'Get Document List' }}
+            </button>
           </div>
 
           <div class="table-container" v-if="documents.length > 0">
@@ -193,7 +217,15 @@
             <label for="question">Question:</label>
             <textarea id="question" v-model="queryForm.question" rows="4" placeholder="Enter your question here..." required></textarea>
           </div>
-          <button type="submit" class="btn">Send Query</button>
+          <button
+            type="submit"
+            class="btn"
+            :disabled="isQuerying"
+          >
+            <i class="fas fa-spinner fa-spin" v-if="isQuerying"></i>
+            <i class="fas fa-search" v-else></i>
+            {{ isQuerying ? '正在查詢中...' : 'Send Query' }}
+          </button>
         </form>
         <div class="response" :class="queryResponseClass" v-html="queryResponse" v-if="queryResponse"></div>
       </div>
@@ -237,6 +269,12 @@ export default {
       sharingStates: {},
 
       updatingVisibility: {},
+
+      // Loading states
+      isCreatingEngine: false,
+      isUploadingFiles: false,
+      isListingDocuments: false,
+      isQuerying: false,
 
       // Response messages and classes
       loginResponse: '',
@@ -319,6 +357,10 @@ export default {
 
     // Create RAG Engine
     async createEngine() {
+      if (this.isCreatingEngine) return; // 防止重複提交
+
+      this.isCreatingEngine = true; // 開始 loading
+
       try {
         const response = await fetch('/api/rag/users/engines', {
           method: 'POST',
@@ -347,6 +389,8 @@ export default {
       } catch (error) {
         this.createEngineResponse = 'Error: ' + error.message;
         this.createEngineResponseClass = 'error';
+      } finally {
+        this.isCreatingEngine = false; // 結束 loading
       }
     },
 
@@ -449,6 +493,8 @@ export default {
 
     // Upload file function
     async uploadFile() {
+      if (this.isUploadingFiles) return; // 防止重複提交
+
       if (!this.selectedEngineForUpload) {
         alert('Please select a RAG Engine');
         return;
@@ -458,6 +504,8 @@ export default {
         alert('Please select at least one file');
         return;
       }
+
+      this.isUploadingFiles = true; // 開始 loading
 
       const totalFiles = this.selectedFiles.length;
       let successCount = 0;
@@ -505,14 +553,19 @@ export default {
       this.selectedFiles = [];
       this.$refs.fileInput.value = '';
       this.uploadFileResponse += '\n\n📊 Upload complete! Processed ' + totalFiles + ' files (Success: ' + successCount + ', Failed: ' + failCount + ')';
+      this.isUploadingFiles = false; // 結束 loading
     },
 
     // List documents
     async listDocuments() {
+      if (this.isListingDocuments) return; // 防止重複提交
+
       if (!this.selectedEngineForDocuments) {
         alert('Please select a RAG Engine');
         return;
       }
+
+      this.isListingDocuments = true; // 開始 loading
 
       try {
         const response = await fetch('/api/rag/users/' + this.currentUserId + '/engines/' + this.selectedEngineForDocuments + '/documents', {
@@ -557,6 +610,8 @@ export default {
       } catch (error) {
         this.listDocumentsResponse = 'Error: ' + error.message;
         this.listDocumentsResponseClass = 'error';
+      } finally {
+        this.isListingDocuments = false; // 結束 loading
       }
     },
 
@@ -589,6 +644,8 @@ export default {
 
     // Query RAG Engine
     async queryEngine() {
+      if (this.isQuerying) return; // 防止重複提交
+
       if (!this.selectedEngineForQuery) {
         alert('Please select a RAG Engine');
         return;
@@ -598,6 +655,8 @@ export default {
         alert('Please enter a question');
         return;
       }
+
+      this.isQuerying = true; // 開始 loading
 
       try {
         this.queryResponse = 'Processing, please wait...';
@@ -634,6 +693,8 @@ export default {
       } catch (error) {
         this.queryResponse = 'Error: ' + error.message;
         this.queryResponseClass = 'error';
+      } finally {
+        this.isQuerying = false; // 結束 loading
       }
     },
 
