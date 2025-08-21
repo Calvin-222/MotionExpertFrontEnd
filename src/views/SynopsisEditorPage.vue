@@ -849,29 +849,39 @@ export default {
       }
     },
     
-    // 發送後續指令給 AI (此部分可以類似地修改為呼叫後端)
+    // 發送後續指令給 AI (現在使用與主要生成相同的完整提示詞)
     async sendFollowUp() {
       if (!this.followUpPrompt.trim()) {
         alert('Please enter a follow-up prompt.');
         return;
       }
-      const previousAIResponse = this.aiResponse;
 
-      this.aiResponse = `${previousAIResponse}\n\n--- User Follow-up ---\n${this.followUpPrompt}\n\nSending follow-up to backend...`;
+      if (!this.selectedEngineId) {
+        alert('請先選擇 RAG Engine');
+        return;
+      }
+
+      const previousAIResponse = this.aiResponse;
+      const userPrompt = this.followUpPrompt.trim();
+
+      // 立即顯示用戶發送的訊息並清空輸入框
+      this.aiResponse = `${previousAIResponse}\n\n--- User Follow-up ---\n${userPrompt}\n\n✅ 已發送到後端處理中...`;
+      this.followUpPrompt = ''; // 立即清空輸入框
+      
       const token = localStorage.getItem('token');
+      
       try {
-        // 假設有一個 /api/synopsis/follow-up 端點
-        const response = await fetch('/api/synopsis/follow-up', { // 您需要在後端新增此路由
+        const response = await fetch('/api/synopsis/follow-up', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({
-            followUpString: this.followUpPrompt // 修改此处以匹配后端期望
-            // 可以選擇性地傳送其他上下文，但後端目前只使用 followUpString
-            // previousSynopsis: currentSynopsisContext,
-            // previousAIResponse: previousAIResponse,
+            followUpString: userPrompt,
+            engineId: this.selectedEngineId,
+            previousResponse: previousAIResponse,
+            templateId: this.selectedTemplateId  // 新增：傳送當前使用的模板 ID
           }),
         });
 
@@ -879,13 +889,23 @@ export default {
           const errorData = await response.json().catch(() => ({ message: 'Failed to parse error response' }));
           throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || response.statusText}`);
         }
+        
         const backendFollowUpResponse = await response.json();
-        // 修改此處以讀取後端回傳的 aiProcessedOutput
-        this.aiResponse = `Backend Follow-up Response:\n${backendFollowUpResponse.message}\n\nAI Processed Output (from backend):\n${backendFollowUpResponse.aiProcessedOutput || 'No AI output received.'}`;
-        this.followUpPrompt = ''; // 清空輸入框
+        
+        // 顯示回應，包含使用的模板資訊
+        let responseMessage = `${previousAIResponse}\n\n--- User Follow-up ---\n${userPrompt}\n\n`;
+        responseMessage += `✅ Backend Follow-up Response:\n${backendFollowUpResponse.message}`;
+        
+        if (backendFollowUpResponse.templateUsed) {
+          responseMessage += `\nTemplate Used: ${backendFollowUpResponse.templateUsed}`;
+        }
+        responseMessage += `\n\nAI Processed Output (from backend):\n${backendFollowUpResponse.aiProcessedOutput || 'No AI output received.'}`;
+        
+        this.aiResponse = responseMessage;
+        
       } catch (error) {
         console.error('Error sending follow-up to backend:', error);
-        this.aiResponse = `${this.aiResponse}\n\nError processing follow-up: ${error.message}.`;
+        this.aiResponse = `${previousAIResponse}\n\n--- User Follow-up ---\n${userPrompt}\n\n❌ Error processing follow-up: ${error.message}`;
       }
     },
     handleFileChange(event) {
