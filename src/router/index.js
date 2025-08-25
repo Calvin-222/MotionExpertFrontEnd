@@ -90,7 +90,7 @@ router.beforeEach(async (to, from, next) => {
 
   // 設置頁面標題
   if (to.meta.title) {
-    document.title = `${to.meta.title} - MotionExpert`
+    document.title = `${to.meta.title} - K Story Lab`
   } else {
     document.title = 'K Story Lab'
   }
