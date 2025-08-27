@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import SynopsisEditorPage from '@/views/SynopsisEditorPage.vue'
+import TranslationPage from '@/views/TranslationPage.vue'
 import LoginPage from '@/views/Login.vue'
 import RegisterPage from '@/views/Register.vue'
 import SearchUsers from '@/views/SearchUsers.vue'
@@ -35,6 +36,12 @@ const router = createRouter({
       path: '/synopsis-editor',
       name: 'synopsis-editor',
       component: SynopsisEditorPage,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/translation',
+      name: 'translation',
+      component: TranslationPage,
       meta: { requiresAuth: true },
     },
     {

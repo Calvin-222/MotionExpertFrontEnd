@@ -136,12 +136,12 @@
                 </div>
               <div class="module-name">Synopsis Editor</div>
             </router-link>
-            <div class="module">
+            <router-link to="/translation" class="module" style="text-decoration: none; color:inherit;">
               <div class="module-icon red-bg">
-                <i class="fas fa-money-bill-wave"></i>
+                <i class="fas fa-language"></i>
               </div>
-              <div class="module-name">Budget Manager</div>
-            </div>
+              <div class="module-name">Voice Script Translation</div>
+            </router-link>
             <div class="module">
               <div class="module-icon red-bg">
                 <i class="fas fa-users"></i>
