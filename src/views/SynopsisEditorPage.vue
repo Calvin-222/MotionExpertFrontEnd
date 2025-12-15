@@ -9,6 +9,16 @@
           <h1>Synopsis Editor</h1>
           <p>Craft your story structure and generate a cohesive synopsis.</p>
 
+          <!-- AI Model Selection -->
+          <div class="model-selector input-group" style="margin-bottom: 1rem;">
+            <label for="modelSelect">AI Model:</label>
+            <select id="modelSelect" v-model="selectedModel">
+              <option v-for="model in models" :key="model.id" :value="model.id">
+                {{ model.name }}
+              </option>
+            </select>
+          </div>
+
           <!-- 模板選擇器 -->
           <div class="template-selector" v-if="userTemplates.length > 0 || error">
             <div class="selector-controls" v-if="userTemplates.length > 0">
@@ -125,6 +135,19 @@
 
       <!-- 右欄：AI 互動 -->
       <div class="ai-column">
+        <!-- Action Buttons Toolbar -->
+        <div class="action-toolbar" style="margin-bottom: 1rem; display: flex; gap: 10px; flex-wrap: wrap;">
+          <button @click="exportFile" class="btn-action">
+            <i class="fas fa-file-export"></i> Export
+          </button>
+          <button @click="saveToCloud" class="btn-action" :disabled="isSavingToCloud">
+            <i class="fas fa-cloud-upload-alt"></i> {{ isSavingToCloud ? 'Saving...' : 'Save to Cloud' }}
+          </button>
+          <button @click="openRagModal" class="btn-action">
+            <i class="fas fa-database"></i> Add to RAG Engine
+          </button>
+        </div>
+
         <div class="ai-interaction-section">
           <h2 class="ai-title">AI Interaction</h2>
           <div class="ai-response-box">
@@ -161,6 +184,27 @@
       @save="saveTemplate"
       @delete="handleTemplateDelete"
     />
+
+    <!-- Add to RAG Modal -->
+    <div v-if="showRagModal" class="modal-overlay">
+      <div class="modal-content">
+        <h3>Add to RAG Engine</h3>
+        <div class="form-group">
+          <label for="targetRagSelect">Select Target RAG Engine:</label>
+          <select id="targetRagSelect" v-model="targetRagId">
+            <option v-for="engine in userEngines" :key="engine.id" :value="engine.id">
+              {{ engine.displayName || engine.name || engine.ragName }}
+            </option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button @click="showRagModal = false" class="btn-cancel">Cancel</button>
+          <button @click="addToRag" class="btn-confirm" :disabled="isAddingToRag || !targetRagId">
+            {{ isAddingToRag ? 'Adding...' : 'Confirm' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -213,6 +257,14 @@ export default {
       // Loading states
       isGenerating: false,
       isSendingFollowUp: false,
+
+      // New Features Data
+      selectedModel: 'gemini-2.5-pro',
+      models: [], // Initialize as empty array
+      showRagModal: false,
+      targetRagId: '',
+      isSavingToCloud: false,
+      isAddingToRag: false,
     };
   },
   computed: {
@@ -270,8 +322,139 @@ export default {
   mounted() {
     this.loadUserEngines();
     this.loadUserTemplates();
+    this.loadModels(); // Load models on mount
   },
   methods: {
+    // Load available AI models from backend
+    async loadModels() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/msw-with-file/models', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        if (data.success && data.models) {
+          this.models = data.models;
+          // Set default model if not already set or if current selection is invalid
+          if (!this.selectedModel || !this.models.find(m => m.id === this.selectedModel)) {
+             this.selectedModel = this.models[0].id;
+          }
+        } else {
+          console.error('Failed to load models:', data.message);
+          // Fallback models if API fails
+          this.models = [
+            { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro (Default)' },
+            { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash' },
+            { id: 'DeepSeek R1 0528', name: 'DeepSeek R1 0528' }
+          ];
+        }
+      } catch (error) {
+        console.error('Error loading models:', error);
+        // Fallback models on error
+        this.models = [
+          { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro (Default)' },
+          { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash' },
+          { id: 'DeepSeek R1 0528', name: 'DeepSeek R1 0528' }
+        ];
+      }
+    },
+
+    // Export functionality
+    exportFile() {
+      // Prefer AI response if available, otherwise use generated synopsis string
+      const content = this.aiResponse || this.generatedSynopsisString || 'No content generated yet.';
+      // Fallback to .txt if .docx is not available (simple implementation)
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `synopsis_${new Date().toISOString().slice(0, 10)}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    },
+
+    // Save to Cloud functionality
+    async saveToCloud() {
+      if (!this.generatedSynopsisString) {
+        alert('No content to save.');
+        return;
+      }
+      this.isSavingToCloud = true;
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/cloud/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            content: this.generatedSynopsisString,
+            filename: `synopsis_${Date.now()}.txt`,
+            bucket: 'motion_expert_generated_data'
+          }),
+        });
+
+        if (response.ok) {
+          alert('Successfully saved to cloud!');
+        } else {
+          throw new Error('Failed to save to cloud');
+        }
+      } catch (error) {
+        console.error('Error saving to cloud:', error);
+        alert('Error saving to cloud: ' + error.message);
+      } finally {
+        this.isSavingToCloud = false;
+      }
+    },
+
+    // RAG functionality
+    openRagModal() {
+      if (!this.generatedSynopsisString) {
+        alert('No content to add to RAG.');
+        return;
+      }
+      this.targetRagId = this.selectedEngineId || (this.userEngines.length > 0 ? this.userEngines[0].id : '');
+      this.showRagModal = true;
+    },
+
+    async addToRag() {
+      if (!this.targetRagId) return;
+      this.isAddingToRag = true;
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/rag/add-content', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            content: this.generatedSynopsisString,
+            ragId: this.targetRagId,
+            filename: `synopsis_rag_${Date.now()}.txt`
+          }),
+        });
+
+        if (response.ok) {
+          alert('Successfully added to RAG Engine!');
+          this.showRagModal = false;
+        } else {
+          throw new Error('Failed to add to RAG');
+        }
+      } catch (error) {
+        console.error('Error adding to RAG:', error);
+        alert('Error adding to RAG: ' + error.message);
+      } finally {
+        this.isAddingToRag = false;
+      }
+    },
+
     // 提交劇情概要，合併輸入並呼叫後端 API
     async submitSynopsis() {
       if (this.isGenerating) return; // 防止重複提交
@@ -294,10 +477,10 @@ export default {
             if (field.type === 'checkbox') {
               displayValue = value ? `(${field.label})` : '';
             } else {
-              displayValue = value || 'N/A';
+              displayValue = value || '';
             }
 
-            if (displayValue && displayValue !== 'N/A') {
+            if (displayValue) {
               parts.push(`  ${field.label}: ${displayValue}`);
             }
           });
@@ -305,30 +488,30 @@ export default {
       } else {
         // 如果沒有動態模板，使用原有的 hardcoded 結構
         parts.push("Act 1: Setup");
-        parts.push(`  Opening Scene: ${this.formData.act1?.openingScene || 'N/A'}`);
-        parts.push(`  Initiation: ${this.formData.act1?.initiation || 'N/A'}`);
+        parts.push(`  Opening Scene: ${this.formData.act1?.openingScene || ''}`);
+        parts.push(`  Initiation: ${this.formData.act1?.initiation || ''}`);
 
         parts.push("\nAct 2: Confrontation and Barrier");
-        parts.push(`  Process and Achievements: ${this.formData.act2?.processAndAchievements || 'N/A'}`);
-        parts.push(`  Obstacles and Challenges: ${this.formData.act2?.obstaclesAndChallenges || 'N/A'}`);
+        parts.push(`  Process and Achievements: ${this.formData.act2?.processAndAchievements || ''}`);
+        parts.push(`  Obstacles and Challenges: ${this.formData.act2?.obstaclesAndChallenges || ''}`);
 
         parts.push("\nAct 3A: Climax");
-        parts.push(`  Turning Point and Discovery: ${this.formData.act3a?.turningPointAndDiscovery || 'N/A'}`);
-        parts.push(`  Inmost Cave: ${this.formData.act3a?.inmostCave || 'N/A'}`);
+        parts.push(`  Turning Point and Discovery: ${this.formData.act3a?.turningPointAndDiscovery || ''}`);
+        parts.push(`  Inmost Cave: ${this.formData.act3a?.inmostCave || ''}`);
 
         parts.push("\nAct 3B: Aftermath");
-        parts.push(`  Final Battle: ${this.formData.act3b?.finalBattle || 'N/A'}`);
-        parts.push(`  Ending Scene: ${this.formData.act3b?.endingScene || 'N/A'}`);
+        parts.push(`  Final Battle: ${this.formData.act3b?.finalBattle || ''}`);
+        parts.push(`  Ending Scene: ${this.formData.act3b?.endingScene || ''}`);
         if (this.formData.act3b?.isAntiClimax) {
           parts.push("    (Anti-climax)");
         }
 
         parts.push("\nAdditional Details:");
-        parts.push(`  Theme and Message: ${this.formData.themeAndMessage || 'N/A'}`);
-        parts.push(`  One-liner: ${this.formData.oneLiner || 'N/A'}`);
-        parts.push(`  Period of Scene: ${this.formData.periodOfScene || 'N/A'}`);
-        parts.push(`  Teasing Action: ${this.formData.teasingAction || 'N/A'}`);
-        parts.push(`  Teasing Dialogue: ${this.formData.teasingDialogue || 'N/A'}`);
+        parts.push(`  Theme and Message: ${this.formData.themeAndMessage || ''}`);
+        parts.push(`  One-liner: ${this.formData.oneLiner || ''}`);
+        parts.push(`  Period of Scene: ${this.formData.periodOfScene || ''}`);
+        parts.push(`  Teasing Action: ${this.formData.teasingAction || ''}`);
+        parts.push(`  Teasing Dialogue: ${this.formData.teasingDialogue || ''}`);
       }
 
       this.generatedSynopsisString = parts.join('\n');
@@ -352,6 +535,7 @@ export default {
             synopsisString: this.generatedSynopsisString,
             engineId: this.selectedEngineId,
             templateId: this.selectedTemplateId, // 添加模板 ID
+            model: this.selectedModel, // Add selected model
           }),
         });
 
@@ -1045,6 +1229,78 @@ export default {
 .loading-state p {
   color: #666;
   font-size: 16px;
+}
+
+/* Action Buttons */
+.btn-action {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #673AB7;
+  color: white;
+}
+
+.btn-action:hover:not(:disabled) {
+  background: #5E35B1;
+}
+
+.btn-action:disabled {
+  background: #B39DDB;
+  cursor: not-allowed;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-cancel {
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-confirm {
+  padding: 8px 15px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .error-state p {

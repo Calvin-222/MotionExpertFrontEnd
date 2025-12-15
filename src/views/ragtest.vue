@@ -199,6 +199,45 @@
       </div>
     </div>
 
+    <!-- Cloud File Management -->
+    <div class="section">
+      <h2><i class="fas fa-cloud"></i>Cloud File Management</h2>
+      <div class="section-content">
+        <div class="subsection">
+          <h3>Files in Google Cloud Storage</h3>
+          <button @click="fetchCloudFiles" class="btn" :disabled="isLoadingCloudFiles">
+            <i class="fas fa-sync" :class="{ 'fa-spin': isLoadingCloudFiles }"></i> Refresh List
+          </button>
+
+          <div class="table-container" v-if="cloudFiles.length > 0">
+            <table>
+              <thead>
+                <tr>
+                  <th>File Name</th>
+                  <th>Created Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="file in cloudFiles" :key="file.name">
+                  <td>{{ file.name }}</td>
+                  <td>{{ formatDate(file.timeCreated) }}</td>
+                  <td>
+                    <button @click="openUploadModal(file)" class="btn btn-small">
+                      Upload to RAG
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-else-if="!isLoadingCloudFiles" class="no-data">
+            No files found in cloud storage.
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Query Function -->
     <div class="section">
       <h2><i class="fas fa-search"></i>RAG Query</h2>
@@ -230,6 +269,31 @@
         <div class="response" :class="queryResponseClass" v-html="queryResponse" v-if="queryResponse"></div>
       </div>
     </div>
+
+    <!-- Cloud Upload Modal -->
+    <div v-if="showCloudUploadModal" class="modal-overlay">
+      <div class="modal-content">
+        <h3>Upload Cloud File to RAG</h3>
+        <div class="form-group">
+          <label>File Name:</label>
+          <input type="text" v-model="uploadFileName" placeholder="Enter file name">
+        </div>
+        <div class="form-group">
+          <label>Select Target RAG Engine:</label>
+          <select v-model="uploadRagId">
+            <option v-for="engine in userEngines.filter(e => e.isOwner)" :key="engine.id" :value="engine.id">
+              {{ engine.name }}
+            </option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button @click="showCloudUploadModal = false" class="btn-cancel">Cancel</button>
+          <button @click="uploadCloudFileToRag" class="btn-confirm" :disabled="isUploadingCloudFile || !uploadRagId || !uploadFileName">
+            {{ isUploadingCloudFile ? 'Uploading...' : 'Confirm Upload' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -255,11 +319,20 @@ export default {
       // Data
       userEngines: [],
       documents: [],
+      cloudFiles: [], // New: Cloud files list
 
       // Selected values
       selectedEngineForUpload: '',
       selectedEngineForDocuments: '',
       selectedEngineForQuery: '',
+
+      // Cloud Upload Modal
+      showCloudUploadModal: false,
+      selectedCloudFile: null,
+      uploadFileName: '',
+      uploadRagId: '',
+      isUploadingCloudFile: false,
+      isLoadingCloudFiles: false,
 
       // File selection
       selectedFiles: [],
@@ -316,6 +389,70 @@ export default {
     this.listEngines();
   },
   methods: {
+    // Cloud File Management
+    async fetchCloudFiles() {
+      this.isLoadingCloudFiles = true;
+      try {
+        const response = await fetch('/api/cloud/files?bucket=motion_expert_generated_data', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + this.Tokenoken,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          this.cloudFiles = data.files || [];
+        } else {
+          console.error('Failed to fetch cloud files:', data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching cloud files:', error);
+      } finally {
+        this.isLoadingCloudFiles = false;
+      }
+    },
+
+    openUploadModal(file) {
+      this.selectedCloudFile = file;
+      this.uploadFileName = file.name;
+      this.uploadRagId = this.userEngines.length > 0 ? this.userEngines[0].id : '';
+      this.showCloudUploadModal = true;
+    },
+
+    async uploadCloudFileToRag() {
+      if (!this.selectedCloudFile || !this.uploadRagId) return;
+
+      this.isUploadingCloudFile = true;
+      try {
+        const response = await fetch('/api/rag/index-cloud-file', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.Tokenoken,
+          },
+          body: JSON.stringify({
+            fileName: this.uploadFileName,
+            cloudFileName: this.selectedCloudFile.name,
+            ragId: this.uploadRagId,
+            bucket: 'motion_expert_generated_data'
+          }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert('Successfully indexed cloud file to RAG!');
+          this.showCloudUploadModal = false;
+        } else {
+          alert('Failed to index file: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error indexing cloud file:', error);
+        alert('Error indexing file: ' + error.message);
+      } finally {
+        this.isUploadingCloudFile = false;
+      }
+    },
+
     // Handle file selection
     handleFileSelection(event) {
       this.selectedFiles = Array.from(event.target.files);
