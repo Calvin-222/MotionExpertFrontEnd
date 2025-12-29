@@ -70,7 +70,7 @@ export default {
     async testAuth() {
       try {
         const token = authService.getToken()
-        const response = await axios.get('http://localhost:3000/api/auth/me', {
+        const response = await axios.get('/api/auth/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
         this.testResult = JSON.stringify(response.data, null, 2)

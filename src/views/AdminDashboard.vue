@@ -74,7 +74,7 @@ const ragForm = ref({
   userid: '' // Admin needs to assign an owner
 });
 
-const API_URL = 'http://localhost:3000/api/admin';
+const API_URL = '/api/admin';
 
 const token = authService.getToken();
 const headers = {
