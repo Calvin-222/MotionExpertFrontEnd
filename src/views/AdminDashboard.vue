@@ -23,7 +23,7 @@ const ragSearchQuery = ref('');
 const filteredUsers = computed(() => {
   if (!userSearchQuery.value) return users.value;
   const query = userSearchQuery.value.toLowerCase();
-  return users.value.filter(user => 
+  return users.value.filter(user =>
     user.username.toLowerCase().includes(query)
   );
 });
@@ -39,7 +39,7 @@ const totalUserPages = computed(() => Math.ceil(filteredUsers.value.length / ite
 const filteredRagEngines = computed(() => {
   if (!ragSearchQuery.value) return ragEngines.value;
   const query = ragSearchQuery.value.toLowerCase();
-  return ragEngines.value.filter(rag => 
+  return ragEngines.value.filter(rag =>
     rag.ragname.toLowerCase().includes(query)
   );
 });
@@ -194,7 +194,7 @@ const handleSubmit = async () => {
 const handleUserSubmit = async () => {
   const url = modalMode.value === 'add' ? `${API_URL}/users` : `${API_URL}/users/${currentItem.value.userid}`;
   const method = modalMode.value === 'add' ? 'POST' : 'PUT';
-  
+
   try {
     const response = await fetch(url, {
       method,
@@ -250,30 +250,30 @@ const closeModal = () => {
 
       <div v-if="loading" class="loading">Loading...</div>
       <div v-else-if="error" class="error">{{ error }}</div>
-      
+
       <div v-else class="content">
         <!-- Tabs -->
         <div class="tabs">
-          <button 
-            :class="{ active: activeTab === 'dashboard' }" 
+          <button
+            :class="{ active: activeTab === 'dashboard' }"
             @click="activeTab = 'dashboard'"
           >
             Dashboard
           </button>
-          <button 
-            :class="{ active: activeTab === 'users' }" 
+          <button
+            :class="{ active: activeTab === 'users' }"
             @click="activeTab = 'users'"
           >
             User Management
           </button>
-          <button 
-            :class="{ active: activeTab === 'rag' }" 
+          <button
+            :class="{ active: activeTab === 'rag' }"
             @click="activeTab = 'rag'"
           >
             RAG Engine Management
           </button>
-          <button 
-            :class="{ active: activeTab === 'links' }" 
+          <button
+            :class="{ active: activeTab === 'links' }"
             @click="activeTab = 'links'"
           >
             Useful Links
@@ -306,15 +306,15 @@ const closeModal = () => {
                 <option :value="25">25 / page</option>
                 <option :value="50">50 / page</option>
               </select>
-              <input 
-                v-model="userSearchQuery" 
-                placeholder="Search users..." 
+              <input
+                v-model="userSearchQuery"
+                placeholder="Search users..."
                 class="search-input"
               />
               <button @click="openAddUserModal" class="add-btn">Add New User</button>
             </div>
           </div>
-          
+
           <table class="data-table">
             <colgroup>
               <col style="width: 20%">
@@ -345,16 +345,16 @@ const closeModal = () => {
 
           <!-- User Pagination Controls -->
           <div class="pagination" v-if="totalUserPages > 1">
-            <button 
-              :disabled="userPage === 1" 
+            <button
+              :disabled="userPage === 1"
               @click="userPage--"
               class="page-btn"
             >
               Previous
             </button>
             <span class="page-info">Page {{ userPage }} of {{ totalUserPages }}</span>
-            <button 
-              :disabled="userPage === totalUserPages" 
+            <button
+              :disabled="userPage === totalUserPages"
               @click="userPage++"
               class="page-btn"
             >
@@ -373,9 +373,9 @@ const closeModal = () => {
                 <option :value="25">25 / page</option>
                 <option :value="50">50 / page</option>
               </select>
-              <input 
-                v-model="ragSearchQuery" 
-                placeholder="Search RAG engines..." 
+              <input
+                v-model="ragSearchQuery"
+                placeholder="Search RAG engines..."
                 class="search-input"
               />
               <button @click="openAddRagModal" class="add-btn">Add New RAG Engine</button>
@@ -418,16 +418,16 @@ const closeModal = () => {
 
           <!-- RAG Pagination Controls -->
           <div class="pagination" v-if="totalRagPages > 1">
-            <button 
-              :disabled="ragPage === 1" 
+            <button
+              :disabled="ragPage === 1"
               @click="ragPage--"
               class="page-btn"
             >
               Previous
             </button>
             <span class="page-info">Page {{ ragPage }} of {{ totalRagPages }}</span>
-            <button 
-              :disabled="ragPage === totalRagPages" 
+            <button
+              :disabled="ragPage === totalRagPages"
               @click="ragPage++"
               class="page-btn"
             >
@@ -442,7 +442,7 @@ const closeModal = () => {
             <div class="info-box">
               <p><strong>Note:</strong> The admin account credentials for Google Cloud can be found in the system documentation, which details the system architecture and guidelines.</p>
             </div>
-            
+
             <div class="links-grid">
               <div class="link-card">
                 <h3>Google Cloud Platform</h3>
@@ -462,7 +462,7 @@ const closeModal = () => {
       <div v-if="showModal" class="modal-overlay">
         <div class="modal">
           <h3>{{ modalMode === 'add' ? 'Add' : 'Edit' }} {{ activeTab === 'users' ? 'User' : 'RAG Engine' }}</h3>
-          
+
           <form @submit.prevent="handleSubmit">
             <!-- User Form Fields -->
             <div v-if="activeTab === 'users'">
