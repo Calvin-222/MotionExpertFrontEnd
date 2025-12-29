@@ -56,7 +56,7 @@
 
 <script>
 import { authService } from '@/services/authService'
-import '@/assets/login.css'
+import '@/assets/Login.css'
 
 export default {
   name: 'LoginPage', // Changed to multi-word to fix eslint warning
