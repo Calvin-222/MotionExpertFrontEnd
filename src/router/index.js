@@ -7,6 +7,7 @@ import RegisterPage from '@/views/Register.vue'
 import SearchUsers from '@/views/SearchUsers.vue'
 import Notifcations from '@/views/notifcations.vue'
 import Ragtest from '@/views/ragtest.vue'
+import AdminDashboard from '@/views/AdminDashboard.vue'
 import { authService } from '@/services/authService'
 
 
@@ -48,6 +49,12 @@ const router = createRouter({
       path: '/search-users',
       name: 'search-users',
       component: SearchUsers,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminDashboard,
       meta: { requiresAuth: true },
     },
     {

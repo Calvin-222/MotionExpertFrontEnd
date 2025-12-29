@@ -48,6 +48,7 @@
             <li><i class="fa fa-tasks"></i> Project Manager</li>
             <li><i class="fa fa-star"></i> Starred</li>
             <li><i class="fa fa-clock"></i> Recent</li>
+            <li v-if="isAdmin" @click="goToAdmin" style="cursor: pointer;"><i class="fa fa-lock"></i> Admin</li>
           </ul>
         </nav>
 
@@ -398,6 +399,9 @@ export default {
     userid(){
       const user = authService.getUser()
       return user?.userid || 'Loading...'
+    },
+    isAdmin() {
+      return this.userid === '21b7ee2e-e46e-11f0-b1a2-42010a66a008';
     }
   },
   methods: {
@@ -453,6 +457,9 @@ export default {
     },
     addfriends() {
       this.$router.push('/search-users') // Redirect to the search users page
+    },
+    goToAdmin() {
+      this.$router.push('/admin');
     },
     Notifcations() {
       this.$router.push('/notifcations') // Redirect to the notifications page
